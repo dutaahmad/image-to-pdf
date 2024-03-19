@@ -1,35 +1,55 @@
-import DiceCube from "@/components/dice-cube";
+import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import Link from "next/link";
 
 export default async function Home() {
-  const diceURL = "https://teyxwtyylywkvgbzwhoe.supabase.co/storage/v1/object/public/tatanation-nextjs-template/scene.gltf?t=2024-03-09T16%3A25%3A27.258Z"
-  const cubeURL = '/CUBE.gltf'
   return (
     <main className="w-full min-h-screen">
-      <div className="flex items-center justify-evenly gap-8 h-screen m-auto">
-        <div className="w-[40%] flex flex-col items-center justify-center">
-          <h1
-            className="font-bold
+      <div className="flex items-center justify-evenly gap-8 m-auto h-screen">
+        <div className="w-[45%] flex flex-col items-center justify-center">
+          <div className="flex gap-4 w-full items-center">
+            <h1
+              className="font-bold
                     text-4xl
+                    text-right
                     font-inter
                     sm:text-5xl
                     md:text-7xl whitespace-normal
                     bg-clip-text
                     "
-          >
-            Tatanation Stack
-          </h1>
-          <Separator
-            className="my-4"
-            decorative />
-          <div className="flex gap-4 items-end justify-evenly w-[40rem]">
-            <h2 className="scroll-m-20 text-3xl font-light tracking-tight transition-colors">ShadcnUI</h2>
+            >
+              Tatanation PDF
+            </h1>
+            <span className="px-[1px] py-[5rem] bg-border" />
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold tracking-tight transition-colors text-left">
+              Your Simple PDF Toolkit!
+            </h2>
+          </div>
+          <Separator className="my-4" decorative />
+          <div className="flex gap-4 items-end justify-evenly w-full h-8 ">
+            <Link href="/single-image-to-pdf">
+              <h2 className="scroll-m-20 text-2xl font-light tracking-tight transition-colors">
+                Single Image to PDF
+              </h2>
+            </Link>
             <Separator orientation="vertical" decorative />
-            <h2 className="scroll-m-20 text-3xl font-light tracking-tight transition-colors">SWR</h2>
+            <Link href="/multiple-image-to-pdf">
+              <h2 className="scroll-m-20 text-2xl font-light tracking-tight transition-colors">
+                Multiple Images to PDF
+              </h2>
+            </Link>
             <Separator orientation="vertical" decorative />
-            <h2 className="scroll-m-20 text-3xl font-light tracking-tight transition-colors">Zod</h2>
+            <Link href="/merge-pdfs">
+              <h2 className="scroll-m-20 text-2xl font-light tracking-tight transition-colors">
+                Merge PDFs
+              </h2>
+            </Link>
             <Separator orientation="vertical" decorative />
-            <h2 className="scroll-m-20 text-3xl font-light tracking-tight transition-colors">Supabase</h2>
+            {/* <Link href="/compress-pdf"> */}
+            <h2 className="scroll-m-20 text-2xl font-light tracking-tight transition-colors">
+              Compress PDF <Badge variant={"secondary"}>Soon</Badge>
+            </h2>
+            {/* </Link> */}
           </div>
         </div>
         {/* <Separator orientation="vertical" decorative />

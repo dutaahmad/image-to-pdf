@@ -3,9 +3,13 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import clsx from "clsx";
 import { ThemeProvider } from "@/components/theme-provider";
-import NavigationBar from "@/components/navbar";
+import NavbarSimplified from "@/components/navbar-simplified";
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "Tatanation Stack",
@@ -19,12 +23,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={clsx(inter.variable, "h-full relative")}>
-        <ThemeProvider attribute="class"
+      <body className={clsx(inter.variable, "h-full w-full ")}>
+        <ThemeProvider
+          attribute="class"
           defaultTheme="system"
           enableSystem
-          disableTransitionOnChange>
-          <NavigationBar />
+          disableTransitionOnChange
+        >
+          <NavbarSimplified />
           {children}
         </ThemeProvider>
       </body>
