@@ -1,16 +1,11 @@
 import { createClient } from "@supabase/supabase-js";
 
+export const SUPABASE_PROJECT_URL = process.env.NEXT_PUBLIC_SUPABASE_PROJECT_URL!;
+export const SUPABASE_PUBLIC_KEY = process.env.NEXT_PUBLIC_SUPABASE_PUBLIC_KEY!;
+export const SUPABASE_SERVICE_KEY = process.env.NEXT_PUBLIC_SUPABASE_SERVICE_KEY!;
+
 // Create a single supabase client for interacting with your database
-const supabase = createClient(
-    process.env.SUPABASE_PROJECT_URL!,
-    process.env.SUPABASE_PUBLIC_KEY!,
-    {
-        global: {
-            headers: {
-                Authorization: "Bearer " + process.env.SUPABASE_SERVICE_KEY,
-            },
-        },
-    }
-);
+const supabase = createClient(SUPABASE_PROJECT_URL, SUPABASE_PUBLIC_KEY);
+
 
 export default supabase;

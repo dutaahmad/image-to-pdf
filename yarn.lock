@@ -1220,6 +1220,20 @@
     namespace-emitter "^2.0.1"
     p-retry "^6.1.0"
 
+"@uppy/core@^3.9.3":
+  version "3.9.3"
+  resolved "https://registry.yarnpkg.com/@uppy/core/-/core-3.9.3.tgz#7d1cccba513225c24bc82a8fccae74f14189a03e"
+  integrity sha512-sUgiJ9Ag3eq8qf3i1unn7BOpjcidBj2lwnpJ8xlMGRcnQqwNznBXP2m39tK8nWEFvrj4kPgIslMZyoR0Lelzxg==
+  dependencies:
+    "@transloadit/prettier-bytes" "^0.3.0"
+    "@uppy/store-default" "^3.2.2"
+    "@uppy/utils" "^5.7.4"
+    lodash "^4.17.21"
+    mime-match "^1.0.2"
+    namespace-emitter "^2.0.1"
+    nanoid "^4.0.0"
+    preact "^10.5.13"
+
 "@uppy/dashboard@^3.7.5":
   version "3.7.5"
   resolved "https://registry.yarnpkg.com/@uppy/dashboard/-/dashboard-3.7.5.tgz#b4d9540da637137eeede562334913d555eaa67da"
@@ -1298,6 +1312,11 @@
     "@uppy/utils" "^5.7.4"
     classnames "^2.2.6"
     preact "^10.5.13"
+
+"@uppy/store-default@^3.2.2":
+  version "3.2.2"
+  resolved "https://registry.yarnpkg.com/@uppy/store-default/-/store-default-3.2.2.tgz#19ef59ea9a427372b21395fd4c842e193b9a9dde"
+  integrity sha512-OiSgT++Jj4nLK0N9WTeod3UNjCH81OXE5BcMJCd9oWzl2d0xPNq2T/E9Y6O72XVd+6Y7+tf5vZlPElutfMB3KQ==
 
 "@uppy/thumbnail-generator@^3.0.8":
   version "3.0.8"
@@ -2384,6 +2403,13 @@ micromatch@^4.0.4, micromatch@^4.0.5:
     braces "^3.0.2"
     picomatch "^2.3.1"
 
+mime-match@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/mime-match/-/mime-match-1.0.2.tgz#3f87c31e9af1a5fd485fb9db134428b23bbb7ba8"
+  integrity sha512-VXp/ugGDVh3eCLOBCiHZMYWQaTNUHv2IJrut+yXA6+JbLPXHglHwfS/5A5L0ll+jkCY7fIzRJcH6OIunF+c6Cg==
+  dependencies:
+    wildcard "^1.1.0"
+
 minimatch@^9.0.1:
   version "9.0.3"
   resolved "https://registry.yarnpkg.com/minimatch/-/minimatch-9.0.3.tgz#a6e00c3de44c3a542bfaae70abfc22420a6da825"
@@ -3398,6 +3424,11 @@ which@^2.0.1:
   integrity sha512-BLI3Tl1TW3Pvl70l3yq3Y64i+awpwXqsGBYWkkqMtnbXgrMD+yj7rhW0kuEDxzJaYXGjEW5ogapKNMEKNMjibA==
   dependencies:
     isexe "^2.0.0"
+
+wildcard@^1.1.0:
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/wildcard/-/wildcard-1.1.2.tgz#a7020453084d8cd2efe70ba9d3696263de1710a5"
+  integrity sha512-DXukZJxpHA8LuotRwL0pP1+rS6CS7FF2qStDDE1C7DDg2rLud2PXRMuEDYIPhgEezwnlHNL4c+N6MfMTjCGTng==
 
 "wrap-ansi-cjs@npm:wrap-ansi@^7.0.0":
   version "7.0.0"

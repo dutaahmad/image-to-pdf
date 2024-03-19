@@ -1,7 +1,13 @@
 "use client";
 
-import { CopyIcon } from "@radix-ui/react-icons";
+import Uppy from "@uppy/core";
+import { Dashboard } from "@uppy/react";
+import Tus from "@uppy/tus";
 
+import "@uppy/core/dist/style.min.css";
+import "@uppy/dashboard/dist/style.min.css";
+
+import { CopyIcon } from "@radix-ui/react-icons";
 import { Button } from "@/components/ui/button";
 import {
     Dialog,
@@ -15,8 +21,60 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useState } from "react";
+import {
+    SUPABASE_PROJECT_URL,
+    SUPABASE_PUBLIC_KEY,
+    SUPABASE_SERVICE_KEY,
+} from "@/lib/supabase";
+
+const beforeUpload = async (req: any) => {
+    req.setHeaders("Authorization", `Bearer ${SUPABASE_SERVICE_KEY}`);
+};
 
 function Uploader() {
+    const [isThereFile, setIsThereFile] = useState<boolean>(false);
+    const [uppy] = useState(() =>
+        new Uppy({
+            restrictions: {
+                maxNumberOfFiles: 1,
+                maxFileSize: 5 * 1024 * 1024,
+                allowedFileTypes: ["image/*"],
+            },
+        }).use(Tus, {
+            endpoint: SUPABASE_PROJECT_URL + "/storage/v1/upload/resumable",
+            allowedMetaFields: [
+                "bucketName",
+                "objectName",
+                "contentType",
+                "cacheControl",
+            ],
+            onBeforeRequest: beforeUpload
+        })
+    );
+
+    uppy.on("file-added", (files) => {
+        files.meta = {
+            ...files.meta,
+            bucketName: "images",
+            contentType: files.type,
+        };
+        setIsThereFile(true);
+    });
+
+    uppy.on("file-removed", () => {
+        setIsThereFile(false);
+    });
+
+    const handleUpload = () => {
+        console.log("uploading...");
+
+        uppy.setFileMeta(uppy.getFiles()[0].id, {
+            objectName: uppy.getFiles()[0].id,
+        });
+        uppy.upload();
+    };
+
     return (
         <Dialog>
             <DialogTrigger asChild>
@@ -24,25 +82,20 @@ function Uploader() {
             </DialogTrigger>
             <DialogContent className="sm:max-w-md">
                 <DialogHeader>
-                    <DialogTitle>Share link</DialogTitle>
+                    <DialogTitle>Upload Image</DialogTitle>
                     <DialogDescription>
-                        Anyone who has this link will be able to view this.
+                        Upload your desired image to be converted to PDF.
                     </DialogDescription>
                 </DialogHeader>
-                <div className="flex items-center space-x-2">
-                    <div className="grid flex-1 gap-2">
-                        <Label htmlFor="link" className="sr-only">
-                            Link
-                        </Label>
-                        <Input
-                            id="link"
-                            defaultValue="https://ui.shadcn.com/docs/installation"
-                            readOnly
-                        />
-                    </div>
-                    <Button type="submit" size="sm" className="px-3">
-                        <span className="sr-only">Copy</span>
-                        <CopyIcon className="h-4 w-4" />
+                <div className="w-full space-y-[1rem]">
+                    <Dashboard uppy={uppy} hideUploadButton />
+                    <Button
+                        onClick={handleUpload}
+                        type="button"
+                        className="w-full"
+                        disabled={!isThereFile}
+                    >
+                        Upload
                     </Button>
                 </div>
                 <DialogFooter className="sm:justify-start">
