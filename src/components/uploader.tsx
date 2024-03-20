@@ -28,10 +28,6 @@ import {
     SUPABASE_SERVICE_KEY,
 } from "@/lib/supabase";
 
-const beforeUpload = async (req: any) => {
-    req.setHeaders("Authorization", `Bearer ${SUPABASE_SERVICE_KEY}`);
-};
-
 function Uploader() {
     const [isThereFile, setIsThereFile] = useState<boolean>(false);
     const [uppy] = useState(() =>
@@ -49,13 +45,20 @@ function Uploader() {
                 "contentType",
                 "cacheControl",
             ],
-            onBeforeRequest: beforeUpload
+            onBeforeRequest: async (req, file) => {
+                req.setHeader(
+                    "Authorization",
+                    `Bearer ${SUPABASE_SERVICE_KEY}`
+                );
+            },
+            chunkSize: 6 * 1024 * 1024,
         })
     );
 
     uppy.on("file-added", (files) => {
         files.meta = {
             ...files.meta,
+            // name: ,
             bucketName: "images",
             contentType: files.type,
         };
@@ -64,6 +67,17 @@ function Uploader() {
 
     uppy.on("file-removed", () => {
         setIsThereFile(false);
+    });
+
+    uppy.on("upload-error", (file, error) => {
+        console.log("Upload Error : ", error);
+    });
+
+    uppy.on("upload-success", (file, response) => {
+        console.log("Upload Success : ", {
+            file,
+            response,
+        });
     });
 
     const handleUpload = () => {

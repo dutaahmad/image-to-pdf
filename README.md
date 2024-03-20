@@ -1,12 +1,10 @@
-# Tatanation Template of NextJS Fullstack
+# PDFNation
 
-Opinionated NextJS consisting of stacks combination:
+## Opensource Low Code PDF Tooling by Tatanation
 
-1. Shadcn UI
-2. SWR
-3. Zod
-4. Supabase
+Available Features:
 
-## Installation
-
-> To Be Added
+1. Convert Image to PDF
+2. Multiple Images to PDF
+3. Merge PDFs
+4. Compress PDF
