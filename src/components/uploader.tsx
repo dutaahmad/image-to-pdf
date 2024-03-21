@@ -7,7 +7,6 @@ import Tus from "@uppy/tus";
 import "@uppy/core/dist/style.min.css";
 import "@uppy/dashboard/dist/style.min.css";
 
-import { CopyIcon } from "@radix-ui/react-icons";
 import { Button } from "@/components/ui/button";
 import {
     Dialog,
@@ -19,14 +18,13 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { useState } from "react";
 import {
     SUPABASE_PROJECT_URL,
     SUPABASE_PUBLIC_KEY,
     SUPABASE_SERVICE_KEY,
 } from "@/lib/supabase";
+import { addImageData, generateUUID } from "@/server/server-functions";
 
 function Uploader() {
     const [isThereFile, setIsThereFile] = useState<boolean>(false);
@@ -50,6 +48,7 @@ function Uploader() {
                     "Authorization",
                     `Bearer ${SUPABASE_SERVICE_KEY}`
                 );
+                req.setHeader("apikey", SUPABASE_PUBLIC_KEY);
             },
             chunkSize: 6 * 1024 * 1024,
         })
@@ -58,7 +57,6 @@ function Uploader() {
     uppy.on("file-added", (files) => {
         files.meta = {
             ...files.meta,
-            // name: ,
             bucketName: "images",
             contentType: files.type,
         };
@@ -69,22 +67,27 @@ function Uploader() {
         setIsThereFile(false);
     });
 
-    uppy.on("upload-error", (file, error) => {
-        console.log("Upload Error : ", error);
-    });
-
     uppy.on("upload-success", (file, response) => {
-        console.log("Upload Success : ", {
-            file,
-            response,
-        });
+        addImageData({
+            name: file!.name,
+            url: response.uploadURL!
+        }).then((data) => {
+            console.log("Upload Success : ", {
+                ...response,
+                db_response: data
+            });
+        })
     });
 
     const handleUpload = () => {
-        console.log("uploading...");
-
+        setIsThereFile(false);
+        console.log("Uploading...");
+        // uppy.setFileMeta(uppy.getFiles()[0].id, {
+        //     objectName: uppy.getFiles()[0].id,
+        // });
+        const customObjectName = crypto.randomUUID();
         uppy.setFileMeta(uppy.getFiles()[0].id, {
-            objectName: uppy.getFiles()[0].id,
+            objectName: customObjectName,
         });
         uppy.upload();
     };
