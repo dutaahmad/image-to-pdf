@@ -1,6 +1,6 @@
 "use client";
 
-import Uppy from "@uppy/core";
+import Uppy, { type UppyFile, type SuccessResponse } from "@uppy/core";
 import { Dashboard } from "@uppy/react";
 import Tus from "@uppy/tus";
 
@@ -18,8 +18,8 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog";
-import { useState } from "react";
-import {
+import { useEffect, useState } from "react";
+import supabase, {
     SUPABASE_PROJECT_URL,
     SUPABASE_PUBLIC_KEY,
     SUPABASE_SERVICE_KEY,
@@ -54,6 +54,46 @@ function Uploader() {
         })
     );
 
+    const onUploadSuccess = async (
+        file:
+            | UppyFile<Record<string, unknown>, Record<string, unknown>>
+            | undefined,
+        response: SuccessResponse
+    ) => {
+        try {
+            const { data } = supabase.storage
+                .from("images")
+                // @ts-ignore
+                .getPublicUrl(file?.meta.objectName);
+            // await addImageData({
+            //     name: file!.name,
+            //     url: data.publicUrl
+            // })
+            const response = await fetch("/api/upload-image", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    name: file!.name,
+                    url: data.publicUrl,
+                }),
+            });
+
+            if (!response.ok) {
+                throw new Error("Error adding image data to database");
+            }
+
+            console.log("Image data added successfully. response: ", await response.json());
+            uppy.off("upload-success", onUploadSuccess); // Remove listener after success
+        } catch (error) {
+            console.error(
+                "Error happened whil processing storage data to database. Errors : ",
+                error
+            );
+        }
+    };
+
     uppy.on("file-added", (files) => {
         files.meta = {
             ...files.meta,
@@ -67,30 +107,25 @@ function Uploader() {
         setIsThereFile(false);
     });
 
-    uppy.on("upload-success", (file, response) => {
-        addImageData({
-            name: file!.name,
-            url: response.uploadURL!
-        }).then((data) => {
-            console.log("Upload Success : ", {
-                ...response,
-                db_response: data
-            });
-        })
-    });
+    // uppy.on("upload-success", onUploadSuccess);
 
     const handleUpload = () => {
         setIsThereFile(false);
         console.log("Uploading...");
-        // uppy.setFileMeta(uppy.getFiles()[0].id, {
-        //     objectName: uppy.getFiles()[0].id,
-        // });
         const customObjectName = crypto.randomUUID();
         uppy.setFileMeta(uppy.getFiles()[0].id, {
             objectName: customObjectName,
         });
         uppy.upload();
     };
+
+    useEffect(() => {
+        uppy.on('upload-success', onUploadSuccess);
+        // Tell React to remove the old listener if a different function is passed to the `handleFileUploaded` prop:
+        return () => {
+            uppy.off('upload-success', onUploadSuccess);
+        };
+    }, [onUploadSuccess]);
 
     return (
         <Dialog>
