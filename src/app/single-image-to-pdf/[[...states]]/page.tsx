@@ -1,9 +1,28 @@
 // "use client";
-
+import { UploadedImageCard } from "@/components/uploaded-image-card";
 import Uploader from "@/components/uploader";
 
-const SingleImageToPDFPage = ({ params }: { params: { states: string[] } }) => {
-    console.log("params : ", params)
+import { getImageByID } from "@/server/server-functions";
+
+const SingleImageToPDFPage = async ({
+    params,
+}: {
+    params: { states: string[] };
+}) => {
+    console.log("params : ", params);
+
+    if (params.states) {
+        const image = await getImageByID(params.states[0]);
+        console.log("image : ", image);
+        return (
+            <main className="min-h-screen flex flex-col gap-8 items-center justify-center">
+                <h1 className="{m-auto}">Single Image To PDF Page</h1>
+                <UploadedImageCard image_id={image!.id!} />
+                <Uploader />
+            </main>
+        );
+    }
+
     return (
         <main className="min-h-screen flex flex-col gap-8 items-center justify-center">
             <h1 className="{m-auto}">Single Image To PDF Page</h1>
@@ -13,3 +32,5 @@ const SingleImageToPDFPage = ({ params }: { params: { states: string[] } }) => {
 };
 
 export default SingleImageToPDFPage;
+
+

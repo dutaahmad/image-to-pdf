@@ -24,9 +24,12 @@ import supabase, {
     SUPABASE_PUBLIC_KEY,
     SUPABASE_SERVICE_KEY,
 } from "@/lib/supabase";
-import { addImageData, generateUUID } from "@/server/server-functions";
+import { addImageData } from "@/server/server-functions";
+import { useParams, useRouter } from "next/navigation";
 
 function Uploader() {
+    const { states } = useParams<{ states: string[] }>()
+    const router = useRouter();
     const [isThereFile, setIsThereFile] = useState<boolean>(false);
     const [uppy] = useState(() =>
         new Uppy({
@@ -54,31 +57,6 @@ function Uploader() {
         })
     );
 
-    const onUploadSuccess = async (
-        file:
-            | UppyFile<Record<string, unknown>, Record<string, unknown>>
-            | undefined,
-        response: SuccessResponse
-    ) => {
-        try {
-            const { data } = supabase.storage
-                .from("images")
-                // @ts-ignore
-                .getPublicUrl(file?.meta.objectName);
-            const response = await addImageData({
-                name: file!.name,
-                url: data.publicUrl
-            })
-
-            console.log("Image data added successfully. response: ", response);
-        } catch (error) {
-            console.error(
-                "Error happened whil processing storage data to database. Errors : ",
-                error
-            );
-        }
-    };
-
     uppy.on("file-added", (files) => {
         files.meta = {
             ...files.meta,
@@ -92,7 +70,34 @@ function Uploader() {
         setIsThereFile(false);
     });
 
-    // uppy.on("upload-success", onUploadSuccess);
+    const onUploadSuccess = async (
+        file:
+            | UppyFile<Record<string, unknown>, Record<string, unknown>>
+            | undefined,
+        response: SuccessResponse
+    ) => {
+        try {
+            // @ts-ignore
+            const fileObjectName: string = file?.meta.objectName
+            const { data } = supabase.storage
+                .from("images")
+                .getPublicUrl(fileObjectName);
+            const response = await addImageData({
+                id: fileObjectName,
+                name: file!.name,
+                url: data.publicUrl,
+
+            });
+            router.push(`/single-image-to-pdf/${fileObjectName}`)
+            console.log("Image data added successfully. response: ", response);
+
+        } catch (error) {
+            console.error(
+                "Error happened whil processing storage data to database. Errors : ",
+                error
+            );
+        }
+    };
 
     const handleUpload = () => {
         setIsThereFile(false);
@@ -104,17 +109,19 @@ function Uploader() {
         uppy.upload();
     };
 
+    console.log("current params.states : ", states);
+
     useEffect(() => {
-        uppy.on('upload-success', onUploadSuccess);
+        uppy.on("upload-success", onUploadSuccess);
         // Tell React to remove the old listener if a different function is passed to the `handleFileUploaded` prop:
         return () => {
-            uppy.off('upload-success', onUploadSuccess);
+            uppy.off("upload-success", onUploadSuccess);
         };
     }, [onUploadSuccess]);
 
     return (
         <Dialog>
-            <DialogTrigger asChild>
+            <DialogTrigger asChild disabled={!!states}>
                 <Button>Upload</Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-md">
