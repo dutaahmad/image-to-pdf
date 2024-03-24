@@ -65,27 +65,12 @@ function Uploader() {
                 .from("images")
                 // @ts-ignore
                 .getPublicUrl(file?.meta.objectName);
-            // await addImageData({
-            //     name: file!.name,
-            //     url: data.publicUrl
-            // })
-            const response = await fetch("/api/upload-image", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    name: file!.name,
-                    url: data.publicUrl,
-                }),
-            });
+            const response = await addImageData({
+                name: file!.name,
+                url: data.publicUrl
+            })
 
-            if (!response.ok) {
-                throw new Error("Error adding image data to database");
-            }
-
-            console.log("Image data added successfully. response: ", await response.json());
-            uppy.off("upload-success", onUploadSuccess); // Remove listener after success
+            console.log("Image data added successfully. response: ", response);
         } catch (error) {
             console.error(
                 "Error happened whil processing storage data to database. Errors : ",

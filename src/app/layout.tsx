@@ -12,8 +12,8 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Tatanation Stack",
-  description: "Fullstack NextJS Fullstack by Tatanation",
+  title: "Tatanation PDF",
+  description: "Your Simple PDF Toolkit!",
 };
 
 export default function RootLayout({
