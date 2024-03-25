@@ -28,7 +28,7 @@ import { addImageData } from "@/server/server-functions";
 import { useParams, useRouter } from "next/navigation";
 
 function Uploader() {
-    const { states } = useParams<{ states: string[] }>()
+    const { states } = useParams<{ states: string[] }>();
     const router = useRouter();
     const [isThereFile, setIsThereFile] = useState<boolean>(false);
     const [uppy] = useState(() =>
@@ -78,7 +78,7 @@ function Uploader() {
     ) => {
         try {
             // @ts-ignore
-            const fileObjectName: string = file?.meta.objectName
+            const fileObjectName: string = file?.meta.objectName;
             const { data } = supabase.storage
                 .from("images")
                 .getPublicUrl(fileObjectName);
@@ -86,11 +86,8 @@ function Uploader() {
                 id: fileObjectName,
                 name: file!.name,
                 url: data.publicUrl,
-
             });
-            router.push(`/single-image-to-pdf/${fileObjectName}`)
-            console.log("Image data added successfully. response: ", response);
-
+            router.push(`/single-image-to-pdf/${fileObjectName}`);
         } catch (error) {
             console.error(
                 "Error happened whil processing storage data to database. Errors : ",
@@ -101,15 +98,12 @@ function Uploader() {
 
     const handleUpload = () => {
         setIsThereFile(false);
-        console.log("Uploading...");
         const customObjectName = crypto.randomUUID();
         uppy.setFileMeta(uppy.getFiles()[0].id, {
             objectName: customObjectName,
         });
         uppy.upload();
     };
-
-    console.log("current params.states : ", states);
 
     useEffect(() => {
         uppy.on("upload-success", onUploadSuccess);

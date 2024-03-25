@@ -1,15 +1,11 @@
-import React from 'react'
+import React from "react";
 
 const SingleImageToPDFLayout = ({
     children,
 }: Readonly<{
     children: React.ReactNode;
 }>) => {
-    return (
-        <section
-            className='w-full min-h-screen'
-        >{children}</section>
-    )
-}
+    return <section className="w-full min-h-screen">{children}</section>;
+};
 
-export default SingleImageToPDFLayout
+export default SingleImageToPDFLayout;

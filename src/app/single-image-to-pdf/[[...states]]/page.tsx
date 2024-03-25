@@ -1,5 +1,5 @@
 // "use client";
-import { UploadedImageCard } from "@/components/uploaded-image-card";
+import ProcessConvertCard from "@/components/process-image-to-pdf-card";
 import Uploader from "@/components/uploader";
 
 import { getImageByID } from "@/server/server-functions";
@@ -17,7 +17,7 @@ const SingleImageToPDFPage = async ({
         return (
             <main className="min-h-screen flex flex-col gap-8 items-center justify-center">
                 <h1 className="{m-auto}">Single Image To PDF Page</h1>
-                <UploadedImageCard image_id={image!.id!} />
+                <ProcessConvertCard image_id={image!.id!} />
                 <Uploader />
             </main>
         );

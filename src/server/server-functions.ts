@@ -5,6 +5,7 @@ import { db } from "./database";
 import { images } from "./db-schema";
 import { eq } from "drizzle-orm";
 import supabase from "@/lib/supabase";
+// import { imageToPDF } from "@/lib/utils";
 
 export const generateUUID = () => randomUUID();
 
@@ -57,4 +58,26 @@ export async function deleteImageByID(image_id: string) {
     } catch (error) {
         console.error("Unkown error: " + error);
     }
+}
+
+export async function convertToPDF(image_id: string) {
+    const {
+        data: { publicUrl: image_url },
+    } = supabase.storage.from("images").getPublicUrl(image_id);
+    const newID = generateUUID();
+    // try {
+    //     const pdfArrayBuffer = await imageToPDF(image_url);
+
+    //     const { data, error } = await supabase.storage
+    //         .from("pdfs")
+    //         .upload(newID, pdfArrayBuffer);
+
+    //     if (data) {
+    //         return data;
+    //     } else if (error) {
+    //         throw error;
+    //     }
+    // } catch (error) {
+    //     throw error;
+    // }
 }
