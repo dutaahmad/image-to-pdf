@@ -1,9 +1,6 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 
-// @ts-ignore
-import ImageToPDF from "image-to-pdf";
-
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }

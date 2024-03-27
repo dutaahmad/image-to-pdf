@@ -9,7 +9,6 @@ const SingleImageToPDFPage = async ({
 }: {
     params: { states: string[] };
 }) => {
-    console.log("params : ", params);
 
     if (params.states) {
         const image = await getImageByID(params.states[0]);
