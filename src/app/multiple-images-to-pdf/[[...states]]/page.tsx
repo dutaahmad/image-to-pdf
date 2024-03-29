@@ -4,7 +4,7 @@ import Uploader from "@/components/uploader";
 
 import { getImageByID } from "@/server/server-functions";
 
-const SingleImageToPDFPage = async ({
+const MultipleImagesToPDF = async ({
     params,
 }: {
     params: { states: string[] };
@@ -12,7 +12,7 @@ const SingleImageToPDFPage = async ({
 
     if (params.states) {
         const image = await getImageByID(params.states[0]);
-
+        console.log("image : ", image);
         return (
             <main className="min-h-screen flex flex-col gap-8 items-center justify-center">
                 <h1 className="{m-auto}">Single Image To PDF Page</h1>
@@ -30,6 +30,6 @@ const SingleImageToPDFPage = async ({
     );
 };
 
-export default SingleImageToPDFPage;
+export default MultipleImagesToPDF;
 
 

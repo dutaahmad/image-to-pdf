@@ -33,7 +33,7 @@ export default async function Home() {
               </h2>
             </Link>
             <Separator orientation="vertical" decorative />
-            <Link href="/multiple-image-to-pdf">
+            <Link href="/multiple-images-to-pdf">
               <h2 className="scroll-m-20 text-2xl font-light tracking-tight transition-colors">
                 Multiple Images to PDF
               </h2>
@@ -47,7 +47,8 @@ export default async function Home() {
             <Separator orientation="vertical" decorative />
             {/* <Link href="/compress-pdf"> */}
             <h2 className="scroll-m-20 text-2xl font-light tracking-tight transition-colors">
-              Compress PDF <Badge variant={"secondary"}>Soon</Badge>
+              Compress PDF{" "}
+              <Badge variant={"secondary"}>Soon</Badge>
             </h2>
             {/* </Link> */}
           </div>

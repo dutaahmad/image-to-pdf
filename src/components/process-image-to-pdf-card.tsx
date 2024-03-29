@@ -48,6 +48,7 @@ const ProcessUploadedImage = ({ image_id, className, ...props }: CardProps) => {
         >
             <CardHeader>
                 <CardTitle>Uploaded Document</CardTitle>
+                <CardDescription>The converted image will always be placed at the center of the document</CardDescription>
             </CardHeader>
             <CardContent className="w-[90%] h-[70%] aspect-auto relative">
                 <Image
@@ -70,7 +71,11 @@ const ProcessUploadedImage = ({ image_id, className, ...props }: CardProps) => {
                 </Button>
                 <Button
                     className="w-full"
-                    onClick={async () => await convertToPDF(image_id)}
+                    onClick={async () => await convertToPDF({
+                        image_id: image_id,
+                        page_size: "A4",
+                        page_orientation: "portrait"
+                    })}
                 // onClick={convertToPDFRequest}
                 >
                     <FileCheck2 className="mr-2 h-4 w-4" /> Convert

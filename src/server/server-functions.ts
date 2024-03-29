@@ -5,7 +5,10 @@ import { db } from "./database";
 import { images } from "./db-schema";
 import { eq } from "drizzle-orm";
 import supabase from "@/lib/supabase";
-// import { imageToPDF } from "@/lib/utils";
+
+import { Readable, Writable } from "stream";
+
+import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
 
 export const generateUUID = () => randomUUID();
 
@@ -42,6 +45,30 @@ export async function getImageByID(image_id: string) {
     });
 }
 
+export async function getImageFromBucket(image_id: string) {
+    try {
+        const { data: image_data, error: fetchImageError } =
+            await supabase.storage.from("images").download(image_id);
+        if (image_data) return image_data;
+        if (fetchImageError)
+            console.error(
+                "Fetching image from supabase storage failed! Error: " +
+                fetchImageError
+            );
+    } catch (error) {
+        if (error instanceof Error)
+            throw {
+                cause: error.cause,
+                stack: error.stack,
+                name: error.name,
+                message:
+                    "Server Error while getting image from supabase storage! Error : " +
+                    error.message,
+            };
+        else throw "Unknown error while getting image from supabase storage!";
+    }
+}
+
 export async function deleteImageByID(image_id: string) {
     try {
         const { data, error } = await supabase.storage
@@ -60,24 +87,61 @@ export async function deleteImageByID(image_id: string) {
     }
 }
 
-export async function convertToPDF(image_id: string) {
-    const {
-        data: { publicUrl: image_url },
-    } = supabase.storage.from("images").getPublicUrl(image_id);
-    const newID = generateUUID();
-    // try {
-    //     const pdfArrayBuffer = await imageToPDF(image_url);
+export async function convertToPDF({
+    image_id,
+    page_size,
+    page_orientation,
+}: {
+    image_id: string;
+    page_size: "A4" | "F4";
+    page_orientation: "portrait" | "landscape";
+}) {
+    try {
+        const pdfPath = await generateUUID();
 
-    //     const { data, error } = await supabase.storage
-    //         .from("pdfs")
-    //         .upload(newID, pdfArrayBuffer);
+        const imageData = await (await getImageFromBucket(
+            image_id
+        ))!.arrayBuffer();
 
-    //     if (data) {
-    //         return data;
-    //     } else if (error) {
-    //         throw error;
-    //     }
-    // } catch (error) {
-    //     throw error;
-    // }
+        const pdfDoc = await PDFDocument.create();
+
+        const embedJpegImage = await pdfDoc.embedJpg(imageData);
+        const jpgDims = embedJpegImage.scale(0.5);
+        const page = pdfDoc.addPage();
+
+        page.drawImage(embedJpegImage, {
+            x: page.getWidth() / 2 - jpgDims.width / 2,
+            y: page.getHeight() / 2 - jpgDims.height / 2 + 250,
+            width: jpgDims.width,
+            height: jpgDims.height,
+        });
+
+        const pdfBytes = await pdfDoc.save();
+
+        const { data, error } = await supabase.storage
+            .from("pdfs")
+            .upload(pdfPath, pdfBytes, { contentType: "application/pdf" });
+        if (data)
+            return {
+                message: "converted pdf uploaded successfully!",
+                data: data,
+            };
+
+        if (error)
+            throw new Error("Error on uploading converted image to pdf!", {
+                cause: error.cause,
+            });
+    } catch (error) {
+        // if (error instanceof HttpRequestError)
+        if (error instanceof Error)
+            throw {
+                cause: error.cause,
+                stack: error.stack,
+                name: error.name,
+                message:
+                    "Server Error while converting image to pdf! Error : " +
+                    error.message,
+            };
+        else throw "Unknown error while converting image to pdf!";
+    }
 }
