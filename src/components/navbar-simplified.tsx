@@ -7,6 +7,7 @@ import { useParams, usePathname, useRouter } from 'next/navigation'
 import { Button } from './ui/button'
 import { ChevronLeftIcon } from '@radix-ui/react-icons'
 import { deleteImageByID } from '@/server/server-functions'
+import { DemoDisclaimer } from './demo-disclaimer'
 
 const NavbarSimplified = () => {
     const router = useRouter()
@@ -34,8 +35,11 @@ const NavbarSimplified = () => {
             <ModeToggle />
         </div>
     ); else return (
-        <div className="flex justify-end fixed inset-x-4 top-4">
-            <ModeToggle />
+        <div className='fixed inset-x-4 top-4'>
+            <DemoDisclaimer />
+            <div className="flex justify-end">
+                <ModeToggle />
+            </div>
         </div>
     );
 }
