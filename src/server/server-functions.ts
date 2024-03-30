@@ -2,7 +2,7 @@
 
 import { randomUUID, UUID } from "crypto";
 import { db } from "./database";
-import { images } from "./db-schema";
+import { images, pdf_documents } from "./db-schema";
 import { eq } from "drizzle-orm";
 import supabase from "@/lib/supabase";
 
@@ -18,6 +18,12 @@ export const getDBURL = () => {
 };
 
 export type AddImageData = {
+    id: string;
+    name: string;
+    url: string;
+};
+
+export type AddPDFDocumentData = {
     id: string;
     name: string;
     url: string;
@@ -48,7 +54,9 @@ export async function getImageByID(image_id: string) {
 export async function getImageFromBucket(image_id: string) {
     try {
         const { data: image_data, error: fetchImageError } =
-            await supabase.storage.from("images").download(image_id);
+            await supabase.storage
+                .from("images")
+                .download(image_id);
         if (image_data) return image_data;
         if (fetchImageError)
             console.error(
@@ -143,5 +151,32 @@ export async function convertToPDF({
                     error.message,
             };
         else throw "Unknown error while converting image to pdf!";
+    }
+}
+
+export async function addPDFDocumentData(addPDFData: AddPDFDocumentData) {
+    return await db
+        .insert(pdf_documents)
+        .values({
+            id: addPDFData.id,
+            name: addPDFData.name,
+            url: addPDFData.url,
+        })
+        .returning();
+}
+
+export async function deletePdfByID(pdf_id: string) {
+    try {
+        const { data, error } = await supabase.storage
+            .from("pdfs")
+            .remove([pdf_id]);
+        if (data) {
+            const deleted = await db
+                .delete(pdf_documents)
+                .where(eq(pdf_documents.id, pdf_id));
+            return deleted;
+        } else if (error) console.error(error.message);
+    } catch (error) {
+        console.error("Unkown error: " + error);
     }
 }

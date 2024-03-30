@@ -4,6 +4,7 @@ import "./globals.css";
 import clsx from "clsx";
 import { ThemeProvider } from "@/components/theme-provider";
 import NavbarSimplified from "@/components/navbar-simplified";
+import { Toaster } from "@/components/ui/sonner";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -23,7 +24,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={clsx(inter.variable, "h-full w-full ")}>
+      <body className={clsx(inter.variable)}>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
@@ -31,7 +32,8 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <NavbarSimplified />
-          {children}
+          <main className="h-full w-full ">{children}</main>
+          <Toaster />
         </ThemeProvider>
       </body>
     </html>

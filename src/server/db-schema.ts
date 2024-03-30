@@ -30,3 +30,13 @@ export const images = createTable("images", {
         .notNull(),
     updatedAt: timestamp("updatedAt"),
 });
+
+export const pdf_documents = createTable("pdf_documents", {
+    id: uuid("id").primaryKey().defaultRandom(),
+    name: varchar("name", { length: 256 }),
+    url: varchar("url", { length: 1000 }),
+    createdAt: timestamp("created_at")
+        .default(sql`CURRENT_TIMESTAMP`)
+        .notNull(),
+    updatedAt: timestamp("updatedAt"),
+})

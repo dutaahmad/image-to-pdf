@@ -26,6 +26,8 @@ import supabase, {
 } from "@/lib/supabase";
 import { addImageData } from "@/server/server-functions";
 import { useParams, useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { CircleCheck, Cross } from "lucide-react";
 
 function Uploader() {
     const { states } = useParams<{ states: string[] }>();
@@ -82,16 +84,38 @@ function Uploader() {
             const { data } = supabase.storage
                 .from("images")
                 .getPublicUrl(fileObjectName);
-            const response = await addImageData({
+            await addImageData({
                 id: fileObjectName,
                 name: file!.name,
                 url: data.publicUrl,
             });
             router.push(`/single-image-to-pdf/${fileObjectName}`);
+            toast(
+                <div className="flex gap-8 items-center p-2">
+                    <p className="text-base text-right">Image ready to be converted to PDF.</p>
+                    <CircleCheck className="h-12 w-12" />
+                </div>,
+                {
+                    description: <p>{new Date().toLocaleDateString()}</p>,
+                    duration: 3000
+                }
+            )
         } catch (error) {
             console.error(
-                "Error happened whil processing storage data to database. Errors : ",
+                "Error happened while processing storage data to database. Errors : ",
                 error
+            );
+            toast.error(
+                <div className="flex gap-4">
+                    <p>
+                        Error happened while processing storage data to
+                        database!
+                    </p>
+                    <Cross className="h-4 w-4" />
+                </div>,
+                {
+                    description: new Date().toLocaleDateString(),
+                }
             );
         }
     };
@@ -138,7 +162,7 @@ function Uploader() {
                 </div>
                 <DialogFooter className="sm:justify-start">
                     <DialogClose asChild>
-                        <Button type="button" variant="secondary">
+                        <Button type="button" variant="ghost">
                             Close
                         </Button>
                     </DialogClose>
