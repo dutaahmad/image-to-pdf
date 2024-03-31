@@ -30,16 +30,80 @@ type CardProps = { image_id: string } & React.ComponentProps<typeof Card>;
 
 function ProcessUploadedImage({ image_id, className, ...props }: CardProps) {
     const router = useRouter();
-    // setTimeout(() => toast(
-    //     <div className="flex gap-8 items-center p-2">
-    //         <p className="text-base text-right">Image ready to be converted to PDF.</p>
-    //         <CircleCheck className="h-12 w-12" />
-    //     </div>,
-    //     {
-    //         description: <p>{new Date().toLocaleDateString()}</p>,
-    //         duration: 3000
-    //     }
-    // ))
+
+    const handleConvertToPDF = async () => {
+        const convertResult = await convertToPDF({
+            image_id: image_id,
+            page_size: "A4",
+            page_orientation: "portrait",
+        });
+
+        if (convertResult) {
+            const {
+                data: { publicUrl: pdf_url },
+            } = supabase.storage.from("pdfs").getPublicUrl(convertResult.data.path);
+            const dbPDFAddResult = await addPDFDocumentData({
+                id: convertResult.data.path,
+                name: "converted-doc-from-" + image_id,
+                url: pdf_url,
+            });
+            router.push(`/single-image-to-pdf/${image_id}/${dbPDFAddResult[0].id}`)
+            // toast(
+            //     <div className="flex flex-col gap-4">
+            //         <div className="flex gap-8 items-center p-2">
+            //             <p className="text-base text-right">{result.message}</p>
+            //             <CheckCircle className="h-12 w-12 " />
+            //         </div>
+            //         <Button onClick={() => window.open(pdf_url)}>
+            //             <Download className="h-4 w-4" /> Download Converted PDF
+            //         </Button>
+            //         <Button
+            //             variant={"destructive"}
+            //             onClick={async () =>
+            //                 await deletePdfByID(result.data.path).finally(
+            //                     () => {
+            //                         toast.error(
+            //                             <div className="flex gap-8 items-center p-2">
+            //                                 <p className="text-base text-right">
+            //                                     Your Converted PDF has been
+            //                                     deleted.
+            //                                 </p>
+            //                                 <TrashIcon className="h-12 w-12" />
+            //                             </div>,
+            //                             {
+            //                                 closeButton: true,
+            //                                 duration: 3000,
+            //                             }
+            //                         );
+            //                     }
+            //                 )
+            //             }
+            //         >
+            //             <TrashIcon className="h-4 w-4" /> Delete Converted PDF
+            //         </Button>
+            //     </div>,
+            //     // { duration: 3000 }
+            //     { closeButton: true }
+            // );
+        }
+    };
+
+    const handleDeleteImage = async () => {
+        await deleteImageByID(image_id);
+        router.push("/single-image-to-pdf");
+        toast.error(
+            <div className="flex gap-8 items-center p-2">
+                <p className="text-base text-right">
+                    Your Image has been deleted.
+                </p>
+                <TrashIcon className="h-12 w-12" />
+            </div>,
+            {
+                description: <p>{new Date().toLocaleDateString()}</p>,
+                duration: 3000,
+            }
+        );
+    };
     return (
         <Card
             className={cn(
@@ -49,7 +113,7 @@ function ProcessUploadedImage({ image_id, className, ...props }: CardProps) {
             {...props}
         >
             <CardHeader>
-                <CardTitle>Uploaded Document</CardTitle>
+                <CardTitle>Uploaded Image</CardTitle>
                 <CardDescription>
                     The converted image will always be placed at the center of
                     the document
@@ -60,7 +124,7 @@ function ProcessUploadedImage({ image_id, className, ...props }: CardProps) {
                     src={image_id}
                     alt="missing image"
                     fill
-                    className="object-cover rounded-lg"
+                    className="object-scale-down rounded-lg"
                     priority
                 />
             </CardContent>
@@ -68,84 +132,11 @@ function ProcessUploadedImage({ image_id, className, ...props }: CardProps) {
                 <Button
                     className="w-full"
                     variant={"destructive"}
-                    onClick={async () => {
-                        await deleteImageByID(image_id);
-                        router.push("/single-image-to-pdf");
-                        toast.error(
-                            <div className="flex gap-8 items-center p-2">
-                                <p className="text-base text-right">
-                                    Your Image has been deleted.
-                                </p>
-                                <TrashIcon className="h-12 w-12" />
-                            </div>,
-                            {
-                                description: (
-                                    <p>{new Date().toLocaleDateString()}</p>
-                                ),
-                                duration: 3000,
-                            }
-                        );
-                    }}
+                    onClick={handleDeleteImage}
                 >
                     <TrashIcon className="mr-2 h-4 w-4" /> Delete
                 </Button>
-                <Button
-                    className="w-full"
-                    onClick={async () => {
-                        const result = await convertToPDF({
-                            image_id: image_id,
-                            page_size: "A4",
-                            page_orientation: "portrait",
-                        });
-
-                        if (result) {
-                            const {
-                                data: { publicUrl: pdf_url },
-                            } = supabase.storage
-                                .from("pdfs")
-                                .getPublicUrl(result.data.path);
-                            await addPDFDocumentData({
-                                id: result.data.path,
-                                name: "converted-doc-from-" + image_id,
-                                url: pdf_url,
-                            });
-                            toast(
-                                <div className="flex flex-col gap-4">
-                                    <div className="flex gap-8 items-center p-2">
-                                        <p className="text-base text-right">
-                                            {result.message}
-                                        </p>
-                                        <CheckCircle className="h-12 w-12 " />
-                                    </div>
-                                    <Button onClick={() => window.open(pdf_url)}>
-                                        <Download className="h-4 w-4" />{" "}
-                                        Download Converted PDF
-                                    </Button>
-                                    <Button variant={"destructive"} onClick={async () => await deletePdfByID(result.data.path).finally(() => {
-                                        toast.error(
-                                            <div className="flex gap-8 items-center p-2">
-                                                <p className="text-base text-right">
-                                                    Your Converted PDF has been deleted.
-                                                </p>
-                                                <TrashIcon className="h-12 w-12" />
-                                            </div>,
-                                            {
-                                                closeButton: true,
-                                                duration: 3000,
-                                            }
-                                        )
-                                    })}>
-                                        <TrashIcon className="h-4 w-4" /> Delete
-                                        Converted PDF
-                                    </Button>
-                                </div>
-                                // { duration: 3000 }
-                                , { closeButton: true }
-                            );
-                        }
-                    }}
-                // onClick={convertToPDFRequest}
-                >
+                <Button className="w-full" onClick={handleConvertToPDF}>
                     <FileCheck2 className="mr-2 h-4 w-4" /> Convert
                 </Button>
             </CardFooter>

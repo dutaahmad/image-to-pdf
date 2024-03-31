@@ -38,7 +38,8 @@ function Uploader() {
             restrictions: {
                 maxNumberOfFiles: 1,
                 maxFileSize: 5 * 1024 * 1024,
-                allowedFileTypes: ["image/*"],
+                // allowedFileTypes: ["image/*"],
+                allowedFileTypes: ["image/jpg", "image/jpeg"],
             },
         }).use(Tus, {
             endpoint: SUPABASE_PROJECT_URL + "/storage/v1/upload/resumable",
