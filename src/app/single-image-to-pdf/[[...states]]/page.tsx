@@ -23,11 +23,53 @@ const SingleImageToPDFPage = async ({
             } = supabase.storage.from("pdfs").getPublicUrl(pdf_id);
             return (
                 <main className="min-h-screen flex items-center justify-center">
-                    <div className="flex flex-col md:flex-row w-[90%] gap-4 items-center justify-center md:w-full md:h-[35rem] mt-[6rem] md:mt-0">
-                        <ImagePreviewCard image_id={image_id} />
+                    <div className="flex flex-col md:flex-row w-[90%] gap-4  justify-center md:w-full md:h-[80vh] mt-[6rem] md:mt-10">
+                        <PDFViewer pdf_url={pdf_url} />
                         <Separator orientation="vertical" />
                         <Separator className="md:hidden" />
-                        <PDFViewer pdf_url={pdf_url} />
+                        <div className="md:w-[30%]">
+                            <ImagePreviewCard image_id={image_id} />
+                            <h1>Meta Data : </h1>
+                            <div className="info">
+                                <div className="info-group">
+                                    <p>Uploaded by</p>
+                                    <label>
+                                        Nahdi Duta Ahmad
+                                        (dutaahmadtefur@gmail.com)
+                                    </label>
+                                </div>
+                                <div className="info-group">
+                                    <p>Status</p>
+                                    <label>
+                                        Signed on 04/01/2024 @ 06:09am
+                                    </label>
+                                </div>
+                                <div className="info-group">
+                                    <p>Last modified</p>
+                                    <label>
+                                        <time>
+                                            Apr 1, 2024
+                                        </time>
+                                    </label>
+                                </div>
+                                <div className="info-group">
+                                    <p>File name</p>
+                                    <label>
+                                        Perjanjian Kerahasiaan &amp; Larangan
+                                        Non-Kompetisi - Nahdi Duta Ahmad-
+                                        eMaterai_signed.pdf
+                                    </label>
+                                </div>
+                                <div className="info-group">
+                                    <p>File extension</p>
+                                    <label>pdf</label>
+                                </div>
+                                <div className="info-group">
+                                    <p>Size</p>
+                                    <label>254 KB</label>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </main>
             );

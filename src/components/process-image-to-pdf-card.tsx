@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useRef } from "react";
-import { useFormState } from "react-dom";
+import { useFormState, useFormStatus } from "react-dom";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { toast } from "sonner";
@@ -36,89 +36,22 @@ import { Input } from "./ui/input";
 
 type CardProps = { image_id: string } & React.ComponentProps<typeof Card>;
 
-const sampleFormAction = async (
-    prevState: ConvertPDFFormState,
-    data: FormData
-) => {
-    console.log(data);
-    return {
-        status: true,
-        message: "sample message",
-        data: { path: "sample path" },
-    };
+const SubmitButton = () => {
+    const { pending } = useFormStatus()
+    return (
+        <Button className="w-full" type="submit" disabled={pending}>
+            <FileCheck2 className="mr-2 h-4 w-4" /> Convert
+        </Button>
+    );
 };
 
 function ProcessUploadedImage({ image_id, className, ...props }: CardProps) {
     const router = useRouter();
-    const [formState, formAction, isPending] = useFormState(
-        onConvertPDFPostAction,
-        // sampleFormAction,
-        {
-            status: false,
-            message: "",
-            data: { path: "" },
-        }
-    );
-    const handleConvertToPDF = async () => {
-        const convertResult = await convertToPDF({
-            image_id: image_id,
-            page_size: PageSize.A4,
-            page_orientation: PageOrientation.PORTRAIT,
-        });
-
-        if (convertResult) {
-            const {
-                data: { publicUrl: pdf_url },
-            } = supabase.storage
-                .from("pdfs")
-                .getPublicUrl(convertResult.data.path);
-            const dbPDFAddResult = await addPDFDocumentData({
-                id: convertResult.data.path,
-                name: "converted-doc-from-" + image_id,
-                url: pdf_url,
-            });
-            router.push(
-                `/single-image-to-pdf/${image_id}/${dbPDFAddResult[0].id}`
-            );
-            // toast(
-            //     <div className="flex flex-col gap-4">
-            //         <div className="flex gap-8 items-center p-2">
-            //             <p className="text-base text-right">{result.message}</p>
-            //             <CheckCircle className="h-12 w-12 " />
-            //         </div>
-            //         <Button onClick={() => window.open(pdf_url)}>
-            //             <Download className="h-4 w-4" /> Download Converted PDF
-            //         </Button>
-            //         <Button
-            //             variant={"destructive"}
-            //             onClick={async () =>
-            //                 await deletePdfByID(result.data.path).finally(
-            //                     () => {
-            //                         toast.error(
-            //                             <div className="flex gap-8 items-center p-2">
-            //                                 <p className="text-base text-right">
-            //                                     Your Converted PDF has been
-            //                                     deleted.
-            //                                 </p>
-            //                                 <TrashIcon className="h-12 w-12" />
-            //                             </div>,
-            //                             {
-            //                                 closeButton: true,
-            //                                 duration: 3000,
-            //                             }
-            //                         );
-            //                     }
-            //                 )
-            //             }
-            //         >
-            //             <TrashIcon className="h-4 w-4" /> Delete Converted PDF
-            //         </Button>
-            //     </div>,
-            //     // { duration: 3000 }
-            //     { closeButton: true }
-            // );
-        }
-    };
+    const [formState, formAction] = useFormState(onConvertPDFPostAction, {
+        status: false,
+        message: "",
+        data: { path: "" },
+    });
 
     const handleDeleteImage = async () => {
         await deleteImageByID(image_id);
@@ -144,6 +77,7 @@ function ProcessUploadedImage({ image_id, className, ...props }: CardProps) {
             convertPDFRef.current!.reset();
         }
     }, [formState]);
+
     return (
         <Card
             className={cn(
@@ -204,9 +138,10 @@ function ProcessUploadedImage({ image_id, className, ...props }: CardProps) {
                             />
                         </div>
                     </RadioGroup>
-                    <Button className="w-full" type="submit" disabled={isPending}>
+                    {/* <Button className="w-full" type="submit">
                         <FileCheck2 className="mr-2 h-4 w-4" /> Convert
-                    </Button>
+                    </Button> */}
+                    <SubmitButton />
                 </form>
             </CardContent>
             <CardFooter className="flex gap-2">
@@ -217,9 +152,6 @@ function ProcessUploadedImage({ image_id, className, ...props }: CardProps) {
                 >
                     <TrashIcon className="mr-2 h-4 w-4" /> Delete
                 </Button>
-                {/* <Button className="w-full" onClick={handleConvertToPDF}>
-                    <FileCheck2 className="mr-2 h-4 w-4" /> Convert
-                </Button> */}
             </CardFooter>
         </Card>
     );
