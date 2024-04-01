@@ -1,6 +1,6 @@
 // "use client";
 import ProcessConvertCard from "@/components/process-image-to-pdf-card";
-import Uploader from "@/components/uploader";
+import Uploader from "@/components/image-uploader";
 
 import { getImageByID } from "@/server/server-functions";
 

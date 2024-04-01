@@ -143,7 +143,7 @@ function Uploader() {
             <DialogTrigger asChild disabled={!!states}>
                 <Button>Upload</Button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-md">
+            <DialogContent className="sm:max-w-md max-w-sm">
                 <DialogHeader>
                     <DialogTitle>Upload Image</DialogTitle>
                     <DialogDescription>
@@ -163,7 +163,7 @@ function Uploader() {
                 </div>
                 <DialogFooter className="sm:justify-start">
                     <DialogClose asChild>
-                        <Button type="button" variant="ghost">
+                        <Button type="button" variant="secondary">
                             Close
                         </Button>
                     </DialogClose>

@@ -107,7 +107,7 @@ function ProcessUploadedImage({ image_id, className, ...props }: CardProps) {
     return (
         <Card
             className={cn(
-                "w-[500px] h-[500px] flex flex-col gap-4 items-center",
+                "w-[90%] h-[500px] md:w-[500px] md:h-[500px] flex flex-col gap-4 items-center",
                 className
             )}
             {...props}

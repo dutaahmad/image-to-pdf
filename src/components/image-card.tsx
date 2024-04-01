@@ -21,15 +21,12 @@ const ImagePreviewCard = async ({
     const { data: imageBlob, error } = await supabase.storage
         .from("images")
         .download(image_id);
-    console.log("data : ", imageBlob);
-    console.log("error : ", error);
 
     if (!error) {
-        // const { width, height } = await getImageMetaFromBlob(imageBlob!);
         return (
             <Card
                 className={cn(
-                    "h-[500px] w-[500px] flex flex-col gap-4 items-center",
+                    "w-[90%] h-[400px] md:w-[500px] md:h-[500px] flex flex-col gap-4 items-center",
                     // `w-[${width}+100px] h-[${height}+100px]`,
                     className
                 )}

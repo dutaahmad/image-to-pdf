@@ -31,7 +31,8 @@ const NavbarSimplified = () => {
         const image_id = params.states[0];
         const pdf_id = params.states[1];
         return (
-            <div className="flex justify-between items-center fixed inset-x-4 top-4">
+            // <div className="flex justify-between items-center fixed inset-x-4 top-4">
+            <div className="flex items-center justify-between mx-auto p-6 px-4 md:px-6 fixed inset-x-0 top-0 z-10 bg-white/40 border shadow-lg dark:bg-white/5 backdrop-filter backdrop-blur-md bg-opacity-50">
                 <Button
                     variant={"ghost"}
                     size={"icon"}
@@ -44,7 +45,7 @@ const NavbarSimplified = () => {
                 >
                     <ChevronLeftIcon className="h-4 w-4" />
                 </Button>
-                <h1 className="scroll-m-20 text-2xl font-semibold tracking-tight ">
+                <h1 className="scroll-m-20 text-lg md:text-2xl font-semibold tracking-tight ">
                     {pageTitle}
                 </h1>
                 <ModeToggle />
@@ -54,13 +55,13 @@ const NavbarSimplified = () => {
 
     if (path !== "/")
         return (
-            <div className="flex justify-between fixed inset-x-4 top-4">
+            <div className="flex items-center justify-between mx-auto p-6 px-4 md:px-6 fixed inset-x-0 top-0 z-10 bg-white/40 border shadow-lg dark:bg-white/5 backdrop-filter backdrop-blur-md bg-opacity-50">
                 <Button variant={"ghost"} size={"icon"} asChild>
                     <Link href={"/"}>
                         <ChevronLeftIcon className="h-4 w-4" />
                     </Link>
                 </Button>
-                <h1 className="scroll-m-20 text-2xl font-semibold tracking-tight ">
+                <h1 className="scroll-m-20 text-lg md:text-2xl font-semibold tracking-tight ">
                     {pageTitle}
                 </h1>
                 <ModeToggle />
