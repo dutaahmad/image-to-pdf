@@ -9,24 +9,13 @@ import supabase from "@/lib/supabase";
 import { Readable, Writable } from "stream";
 
 import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
+import { AddImageData, AddPDFDocumentData, ConvertPDFProps } from "@/lib/types";
 
 export const generateUUID = () => randomUUID();
 
 export const getDBURL = () => {
     const DB_URL = process.env.DATABASE_URL;
     return DB_URL ?? null;
-};
-
-export type AddImageData = {
-    id: string;
-    name: string;
-    url: string;
-};
-
-export type AddPDFDocumentData = {
-    id: string;
-    name: string;
-    url: string;
 };
 
 export async function addImageData(addImageData: AddImageData) {
@@ -99,11 +88,7 @@ export async function convertToPDF({
     image_id,
     page_size,
     page_orientation,
-}: {
-    image_id: string;
-    page_size: "A4" | "F4";
-    page_orientation: "portrait" | "landscape";
-}) {
+}: ConvertPDFProps) {
     try {
         const pdfPath = await generateUUID();
 
