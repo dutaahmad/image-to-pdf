@@ -1,4 +1,7 @@
 "use client";
+import { useEffect, useState } from "react";
+import { DialogProps } from "@radix-ui/react-dialog";
+import { CircleCheck, Cross } from "lucide-react";
 
 import Uppy, { type UppyFile, type SuccessResponse } from "@uppy/core";
 import { Dashboard } from "@uppy/react";
@@ -18,7 +21,6 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog";
-import { useEffect, useState } from "react";
 import supabase, {
     SUPABASE_PROJECT_URL,
     SUPABASE_PUBLIC_KEY,
@@ -27,18 +29,18 @@ import supabase, {
 import { addImageData } from "@/server/server-functions";
 import { useParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { CircleCheck, Cross } from "lucide-react";
 
-function Uploader() {
+type UploaderProps = { multiple?: boolean };
+
+function Uploader({ multiple = false }: UploaderProps) {
     const { states } = useParams<{ states: string[] }>();
     const router = useRouter();
     const [isThereFile, setIsThereFile] = useState<boolean>(false);
     const [uppy] = useState(() =>
         new Uppy({
             restrictions: {
-                maxNumberOfFiles: 1,
+                maxNumberOfFiles: multiple ? 10 : 1,
                 maxFileSize: 5 * 1024 * 1024,
-                // allowedFileTypes: ["image/*"],
                 allowedFileTypes: ["image/jpg", "image/jpeg"],
             },
         }).use(Tus, {
@@ -60,11 +62,11 @@ function Uploader() {
         })
     );
 
-    uppy.on("file-added", (files) => {
-        files.meta = {
-            ...files.meta,
+    uppy.on("file-added", (file) => {
+        file.meta = {
+            ...file.meta,
             bucketName: "images",
-            contentType: files.type,
+            contentType: file.type,
         };
         setIsThereFile(true);
     });
@@ -93,14 +95,16 @@ function Uploader() {
             router.push(`/single-image-to-pdf/${fileObjectName}`);
             toast(
                 <div className="flex gap-8 items-center p-2">
-                    <p className="text-base text-right">Image ready to be converted to PDF.</p>
+                    <p className="text-base text-right">
+                        Image ready to be converted to PDF.
+                    </p>
                     <CircleCheck className="h-12 w-12" />
                 </div>,
                 {
                     description: <p>{new Date().toLocaleDateString()}</p>,
-                    duration: 3000
+                    duration: 3000,
                 }
-            )
+            );
         } catch (error) {
             console.error(
                 "Error happened while processing storage data to database. Errors : ",
@@ -123,11 +127,22 @@ function Uploader() {
 
     const handleUpload = () => {
         setIsThereFile(false);
-        const customObjectName = crypto.randomUUID();
-        uppy.setFileMeta(uppy.getFiles()[0].id, {
-            objectName: customObjectName,
-        });
-        uppy.upload();
+        if (multiple) {
+            const files = uppy.getFiles();
+            for (const file of files) {
+                const customObjectName = crypto.randomUUID();
+                uppy.setFileMeta(file.id, {
+                    objectName: customObjectName,
+                });
+                uppy.upload();
+            }
+        } else {
+            const customObjectName = crypto.randomUUID();
+            uppy.setFileMeta(uppy.getFiles()[0].id, {
+                objectName: customObjectName,
+            });
+            uppy.upload();
+        }
     };
 
     useEffect(() => {

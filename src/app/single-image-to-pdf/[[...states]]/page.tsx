@@ -88,10 +88,6 @@ const SingleImageToPDFPage = async ({
                     Upload a single .jpeg image to our platform to start
                     converting!
                 </h1>
-                {/* <p className="leading-7 [&:not(:first-child)]:mt-6">
-                    To start converting, upload a single jpeg image to our
-                    platform!
-                </p> */}
             </div>
             <Uploader />
         </main>
