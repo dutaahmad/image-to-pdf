@@ -85,6 +85,7 @@ export async function deleteImageByID(image_id: string) {
         console.error("Unkown error: " + error);
     }
 }
+
 export async function addPDFDocumentData(addPDFData: AddPDFDocumentData) {
     return await db
         .insert(pdf_documents)
@@ -110,6 +111,15 @@ export async function deletePdfByID(pdf_id: string) {
     } catch (error) {
         console.error("Unkown error: " + error);
     }
+}
+
+export async function getPDFDocumentData(pdf_id: string) {
+    return (
+        await db
+            .select()
+            .from(pdf_documents)
+            .where(eq(pdf_documents.id, pdf_id))
+    )[0];
 }
 
 /**

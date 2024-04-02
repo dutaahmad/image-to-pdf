@@ -12,7 +12,7 @@ export default function Menu() {
         const { height, width } = useWindowDimensions();
         if (width >= 450)
             return (
-                <div className="flex gap-4 items-end justify-evenly w-full h-8 ">
+                <div className="flex gap-4 items-start justify-evenly w-full h-16">
                     <Link href="/single-image-to-pdf">
                         <h2 className="scroll-m-20 text-2xl font-light tracking-tight transition-colors">
                             Single Image to PDF

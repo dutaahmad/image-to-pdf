@@ -25,14 +25,14 @@ const ImagePreviewCard = async ({
         return (
             <Card
                 className={cn(
-                    "h-[400px] md:w-full md:h-[300px] flex flex-col gap-4",
+                    "h-[250px] md:w-full md:h-[300px] flex flex-col gap-4",
                     // `w-[${width}+100px] h-[${height}+100px]`,
                     className
                 )}
                 {...props}
             >
                 <CardHeader>
-                    <CardTitle className="scroll-m-20 border-b pb-2 text-xl font-semibold tracking-tight transition-colors first:mt-0">Source Image</CardTitle>
+                    <CardTitle className="scroll-m-20 border-b pb-2 text-base md:text-xl font-semibold tracking-tight transition-colors first:mt-0">Source Image</CardTitle>
                 </CardHeader>
                 {/* <CardContent className="w-[90%] h-[90%] rounded-lg aspect-auto relative overflow-scroll">
                     <Image

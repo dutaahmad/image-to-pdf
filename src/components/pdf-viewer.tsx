@@ -7,11 +7,11 @@ const PDFViewIframe = ({ pdf_url }: { pdf_url: string }) => {
     return (
         <Card
             className={cn(
-                "w-[90%] h-[400px] md:h-[80vh] md:w-[60%] flex flex-col gap-4"
+                "h-[70vh] md:h-[80vh] md:w-[60%] flex flex-col gap-4"
             )}
         >
             <CardHeader>
-                <CardTitle className="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight transition-colors first:mt-0">
+                <CardTitle className="scroll-m-20 border-b pb-2 text-xl md:text-3xl font-semibold tracking-tight transition-colors first:mt-0">
                     PDF Result
                 </CardTitle>
             </CardHeader>
@@ -19,7 +19,7 @@ const PDFViewIframe = ({ pdf_url }: { pdf_url: string }) => {
                 <iframe
                     src={pdf_url}
                     itemType="application/pdf"
-                    className="h-full w-full rounded-lg"
+                    className="h-full w-full rounded-sm md:rounded-lg"
                 />
             </CardContent>
         </Card>
