@@ -145,7 +145,7 @@ function Uploader({ multiple = false }: UploaderProps) {
     ) => {
         try {
             const files = result.successful;
-            const filesQueryStringArray: string[] = [];
+            const uploadedImagesQueryStringArray: string[] = [];
             for (const file of files) {
                 // @ts-ignore
                 const fileObjectName: string = file.meta.objectName;
@@ -170,10 +170,10 @@ function Uploader({ multiple = false }: UploaderProps) {
                     }
                 );
                 const fileQueryString =
-                    createQueryString("file", fileObjectName) + "&";
-                filesQueryStringArray.push(fileQueryString);
+                    createQueryString("uploaded_image", fileObjectName) + "&";
+                uploadedImagesQueryStringArray.push(fileQueryString);
             }
-            const filesQueryString = filesQueryStringArray.join("");
+            const uploadedImagesQueryString = uploadedImagesQueryStringArray.join("");
             toast(
                 <div className="flex gap-8 items-center p-2">
                     <p className="text-base text-right">
@@ -187,7 +187,7 @@ function Uploader({ multiple = false }: UploaderProps) {
                     duration: 3000,
                 }
             );
-            router.push("/multiple-images-to-pdf?" + filesQueryString);
+            router.push("/multiple-images-to-pdf?" + uploadedImagesQueryString);
         } catch (error) {
             console.error(
                 "Error happened while processing storage data to database. Errors : ",

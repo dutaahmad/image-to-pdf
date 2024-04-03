@@ -9,16 +9,10 @@ import { TrashIcon } from "@radix-ui/react-icons";
 import { FileCheck2 } from "lucide-react";
 
 import { cn } from "@/lib/utils";
-import {
-    addPDFDocumentData,
-    convertToPDF,
-    deleteImageByID,
-} from "@/server/server-functions";
+import { deleteImageByID } from "@/server/server-functions";
 import { onConvertPDFPostAction } from "@/server/forms";
 
-import supabase from "@/lib/supabase";
-
-import { ConvertPDFFormState, PageOrientation, PageSize } from "@/lib/types";
+import { PageOrientation, PageSize } from "@/lib/types";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -32,28 +26,17 @@ import {
 
 import { Label } from "./ui/label";
 import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
-import { Input } from "./ui/input";
 import Spinner from "./spinner";
+import { Input } from "./ui/input";
+import SubmitButton from "./submit-button";
 
 type CardProps = { image_id: string } & React.ComponentProps<typeof Card>;
 
-const SubmitButton = () => {
-    const { pending } = useFormStatus();
-    return (
-        <Button type="submit" size={"sm"} disabled={pending}>
-            {pending ? (
-                <Spinner height={16} width={16} />
-            ) : (
-                <FileCheck2 className="mr-2 h-4 w-4" />
-            )}{" "}
-            Convert
-        </Button>
-    );
-};
-
 function ProcessUploadedImage({ image_id, className, ...props }: CardProps) {
+    const convertPDFWithImageId = onConvertPDFPostAction.bind(null, image_id);
+
     const router = useRouter();
-    const [formState, formAction] = useFormState(onConvertPDFPostAction, {
+    const [formState, formAction] = useFormState(convertPDFWithImageId, {
         status: false,
         message: "",
         data: { path: "" },
@@ -61,19 +44,19 @@ function ProcessUploadedImage({ image_id, className, ...props }: CardProps) {
 
     const handleDeleteImage = async () => {
         await deleteImageByID(image_id);
-        router.push("/single-image-to-pdf");
         toast.error(
-            <div className="flex gap-8 items-center p-2">
+            <div className="flex items-center gap-8 p-2">
                 <p className="text-base text-right">
                     Your Image has been deleted.
                 </p>
-                <TrashIcon className="h-12 w-12" />
+                <TrashIcon className="w-12 h-12" />
             </div>,
             {
                 description: <p>{new Date().toLocaleDateString()}</p>,
                 duration: 3000,
             }
         );
+        router.push("/single-image-to-pdf");
     };
 
     const convertPDFRef = useRef<HTMLFormElement>(null);
@@ -99,7 +82,7 @@ function ProcessUploadedImage({ image_id, className, ...props }: CardProps) {
                     the document
                 </CardDescription>
             </CardHeader>
-            <CardContent className=" aspect-auto flex flex-col md:flex-row items-center justify-around gap-8 w-full h-full ">
+            <CardContent className="flex flex-col items-center justify-around w-full h-full gap-8 aspect-auto md:flex-row">
                 <div className="relative w-[90%] md:w-[60%] h-[100%]">
                     <Image
                         src={image_id}
@@ -115,40 +98,23 @@ function ProcessUploadedImage({ image_id, className, ...props }: CardProps) {
                     action={formAction}
                     className="w-[90%] md:w-[30%] flex flex-row justify-around items-end md:flex-col md:items-start md:justify-center gap-2 md:gap-4"
                 >
-                    <Input
-                        id="image_id"
-                        name="image_id"
-                        className="hidden"
-                        value={image_id}
-                        readOnly
-                    />
                     <div className="">
-                        <Label
-                            className="text-xs"
-                            htmlFor="page_size"
-                        >
+                        <Label className="text-xs" htmlFor="page_size">
                             Page Size
                         </Label>
                         <RadioGroup id="page_size" name="page_size">
                             <div className="flex items-center space-x-2">
                                 <RadioGroupItem value={PageSize.A4 as string} />
-                                <Label className="text-xs">
-                                    A4
-                                </Label>
+                                <Label className="text-xs">A4</Label>
                             </div>
                             <div className="flex items-center space-x-2">
                                 <RadioGroupItem value={PageSize.F4 as string} />
-                                <Label className="text-xs">
-                                    F4
-                                </Label>
+                                <Label className="text-xs">F4</Label>
                             </div>
                         </RadioGroup>
                     </div>
                     <div className="">
-                        <Label
-                            htmlFor="page_orientation"
-                            className="text-xs"
-                        >
+                        <Label htmlFor="page_orientation" className="text-xs">
                             Page Orientation
                         </Label>
                         <RadioGroup
@@ -178,7 +144,7 @@ function ProcessUploadedImage({ image_id, className, ...props }: CardProps) {
                     variant={"destructive"}
                     onClick={handleDeleteImage}
                 >
-                    <TrashIcon className="mr-2 h-4 w-4" /> Delete
+                    <TrashIcon className="w-4 h-4 mr-2" /> Delete
                 </Button>
             </CardFooter>
         </Card>

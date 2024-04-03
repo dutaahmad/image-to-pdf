@@ -3,7 +3,12 @@
 import React from "react";
 import Link from "next/link";
 import { ModeToggle } from "./theme-toggle";
-import { useParams, usePathname, useRouter } from "next/navigation";
+import {
+    useParams,
+    usePathname,
+    useRouter,
+    useSearchParams,
+} from "next/navigation";
 import { Button } from "./ui/button";
 import { ChevronLeftIcon } from "@radix-ui/react-icons";
 import { deleteImageByID, deletePdfByID } from "@/server/server-functions";
@@ -13,6 +18,9 @@ const NavbarSimplified = () => {
     const router = useRouter();
     const path = usePathname();
     const params = useParams<{ states: string[] }>();
+    const searchParams = useSearchParams();
+
+    const uploadedURLQuery = searchParams.getAll("uploaded_image");
 
     const pageTitle = path
         .split("/")[1]
@@ -27,12 +35,12 @@ const NavbarSimplified = () => {
             return transformedWord;
         })
         .join(" ");
-    if (params && params.states) {
+    if (path.includes("single-image-to-pdf") && params && params.states) {
         const image_id = params.states[0];
         const pdf_id = params.states[1];
         return (
-            // <div className="flex justify-between items-center fixed inset-x-4 top-4">
-            <div className="flex items-center justify-between mx-auto p-6 px-4 md:px-6 fixed inset-x-0 top-0 z-10 bg-white/40 border shadow-lg dark:bg-white/5 backdrop-filter backdrop-blur-md bg-opacity-50">
+            // <div className="fixed flex items-center justify-between inset-x-4 top-4">
+            <div className="fixed inset-x-0 top-0 z-10 flex items-center justify-between p-6 px-4 mx-auto bg-opacity-50 border shadow-lg md:px-6 bg-white/40 dark:bg-white/5 backdrop-filter backdrop-blur-md">
                 <Button
                     variant={"ghost"}
                     size={"icon"}
@@ -43,9 +51,34 @@ const NavbarSimplified = () => {
                         router.push("/");
                     }}
                 >
-                    <ChevronLeftIcon className="h-4 w-4" />
+                    <ChevronLeftIcon className="w-4 h-4" />
                 </Button>
-                <h1 className="scroll-m-20 text-lg md:text-2xl font-semibold tracking-tight ">
+                <h1 className="text-lg font-semibold tracking-tight scroll-m-20 md:text-2xl ">
+                    {pageTitle}
+                </h1>
+                <ModeToggle />
+            </div>
+        );
+    }
+
+    if (uploadedURLQuery) {
+        return (
+            <div className="fixed inset-x-0 top-0 z-10 flex items-center justify-between p-6 px-4 mx-auto bg-opacity-50 border shadow-lg md:px-6 bg-white/40 dark:bg-white/5 backdrop-filter backdrop-blur-md">
+                <Button
+                    variant={"ghost"}
+                    size={"icon"}
+                    type="button"
+                    onClick={async () => {
+                        for (const image_id of uploadedURLQuery) {
+                            await deleteImageByID(image_id);
+                            // if (pdf_id) await deletePdfByID(pdf_id);
+                        }
+                        router.push("/");
+                    }}
+                >
+                    <ChevronLeftIcon className="w-4 h-4" />
+                </Button>
+                <h1 className="text-lg font-semibold tracking-tight scroll-m-20 md:text-2xl ">
                     {pageTitle}
                 </h1>
                 <ModeToggle />
@@ -55,13 +88,13 @@ const NavbarSimplified = () => {
 
     if (path !== "/")
         return (
-            <div className="flex items-center justify-between mx-auto p-6 px-4 md:px-6 fixed inset-x-0 top-0 z-10 bg-white/40 border shadow-lg dark:bg-white/5 backdrop-filter backdrop-blur-md bg-opacity-50">
+            <div className="fixed inset-x-0 top-0 z-10 flex items-center justify-between p-6 px-4 mx-auto bg-opacity-50 border shadow-lg md:px-6 bg-white/40 dark:bg-white/5 backdrop-filter backdrop-blur-md">
                 <Button variant={"ghost"} size={"icon"} asChild>
                     <Link href={"/"}>
-                        <ChevronLeftIcon className="h-4 w-4" />
+                        <ChevronLeftIcon className="w-4 h-4" />
                     </Link>
                 </Button>
-                <h1 className="scroll-m-20 text-lg md:text-2xl font-semibold tracking-tight ">
+                <h1 className="text-lg font-semibold tracking-tight scroll-m-20 md:text-2xl ">
                     {pageTitle}
                 </h1>
                 <ModeToggle />
