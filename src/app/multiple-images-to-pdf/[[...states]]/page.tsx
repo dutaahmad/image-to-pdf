@@ -6,9 +6,12 @@ import { getImageByID } from "@/server/server-functions";
 
 const MultipleImagesToPDF = async ({
     params,
+    searchParams
 }: {
     params: { states: string[] };
+    searchParams: { [key: string]: string | string[] | undefined };
 }) => {
+    console.log("searchParams Server : ", searchParams)
     return (
         <main className="min-h-screen flex flex-col gap-8 items-center justify-center">
             <div className="flex flex-col items-center">

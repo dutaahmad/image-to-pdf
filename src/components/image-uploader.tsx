@@ -243,8 +243,6 @@ function Uploader({ multiple = false }: UploaderProps) {
         }
     }, [onSingleUploadSuccess, onUploadsComplete]);
 
-    console.log("query params : ", searchParams.getAll("file"));
-
     return (
         <Dialog>
             <DialogTrigger asChild disabled={!!states}>
