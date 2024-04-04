@@ -6,17 +6,22 @@ import { getImageByID } from "@/server/server-functions";
 
 const MergePDFs = async ({
     params,
+    searchParams,
 }: {
     params: { states: string[] };
+    searchParams: { [key: string]: string | string[] | undefined };
 }) => {
-
     return (
-        <main className="min-h-screen flex flex-col gap-8 items-center justify-center">
-            <h1 className="mt-8 scroll-m-20 text-2xl font-semibold tracking-tight">Merge PDFs (Work In Progress)</h1>
+        <main className="flex flex-col items-center justify-center min-h-screen gap-8">
+            <div className="flex flex-col items-center">
+                <h1 className="text-2xl font-semibold tracking-tight text-center scroll-m-20">
+                    Upload maximum 10 (ten) PDF documents to our platform to
+                    start merging them!
+                </h1>
+            </div>
+            <Uploader multiple uploaderType="pdf" />
         </main>
     );
 };
 
 export default MergePDFs;
-
-

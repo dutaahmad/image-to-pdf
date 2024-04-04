@@ -30,13 +30,13 @@ import supabase, {
     SUPABASE_PUBLIC_KEY,
     SUPABASE_SERVICE_KEY,
 } from "@/lib/supabase";
-import { addImageData } from "@/server/server-functions";
+import { addImageData, addPDFDocumentData } from "@/server/server-functions";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 
-type UploaderProps = { multiple?: boolean };
+type UploaderProps = { multiple?: boolean; uploaderType?: "image" | "pdf" };
 
-function Uploader({ multiple = false }: UploaderProps) {
+function Uploader({ multiple = false, uploaderType = "image" }: UploaderProps) {
     const { states } = useParams<{ states: string[] }>();
     const router = useRouter();
     const searchParams = useSearchParams();
@@ -46,7 +46,10 @@ function Uploader({ multiple = false }: UploaderProps) {
             restrictions: {
                 maxNumberOfFiles: multiple ? 10 : 1,
                 maxFileSize: 5 * 1024 * 1024,
-                allowedFileTypes: ["image/jpg", "image/jpeg"],
+                allowedFileTypes:
+                    uploaderType === "image"
+                        ? ["image/jpg", "image/jpeg"]
+                        : ["application/pdf"],
             },
         }).use(Tus, {
             endpoint: SUPABASE_PROJECT_URL + "/storage/v1/upload/resumable",
@@ -80,7 +83,7 @@ function Uploader({ multiple = false }: UploaderProps) {
     uppy.on("file-added", (file) => {
         file.meta = {
             ...file.meta,
-            bucketName: "images",
+            bucketName: uploaderType === "image" ? "images" : "pdfs",
             contentType: file.type,
         };
         setIsThereFile(true);
@@ -100,7 +103,7 @@ function Uploader({ multiple = false }: UploaderProps) {
             // @ts-ignore
             const fileObjectName: string = file?.meta.objectName;
             const { data } = supabase.storage
-                .from("images")
+                .from(uploaderType === "image" ? "images" : "pdfs")
                 .getPublicUrl(fileObjectName);
             await addImageData({
                 id: fileObjectName,
@@ -110,7 +113,9 @@ function Uploader({ multiple = false }: UploaderProps) {
             toast(
                 <div className="flex gap-8 items-center p-2">
                     <p className="text-base text-right">
-                        Image ready to be converted to PDF.
+                        {uploaderType === "image"
+                            ? "Image ready to be converted to PDF."
+                            : "PDF Source uploaded"}
                     </p>
                     <CircleCheck className="h-12 w-12" />
                 </div>,
@@ -150,17 +155,27 @@ function Uploader({ multiple = false }: UploaderProps) {
                 // @ts-ignore
                 const fileObjectName: string = file.meta.objectName;
                 const { data } = supabase.storage
-                    .from("images")
+                    .from(uploaderType === "image" ? "images" : "pdfs")
                     .getPublicUrl(fileObjectName);
-                await addImageData({
-                    id: fileObjectName,
-                    name: file!.name,
-                    url: data.publicUrl,
-                });
+                if (uploaderType === "image")
+                    await addImageData({
+                        id: fileObjectName,
+                        name: file!.name,
+                        url: data.publicUrl,
+                    });
+                else
+                    await addPDFDocumentData({
+                        id: fileObjectName,
+                        name: file!.name,
+                        url: data.publicUrl,
+                        is_source: true,
+                    });
                 toast(
                     <div className="flex gap-8 items-center p-2">
                         <p className="text-base text-right">
-                            Image {fileObjectName} ready to be converted to PDF.
+                            {uploaderType === "image"
+                                ? `Image ${fileObjectName} ready to be converted to PDF.`
+                                : `PDF Document of ${fileObjectName} uploaded.`}
                         </p>
                         <CircleCheck className="h-12 w-12" />
                     </div>,
@@ -173,12 +188,16 @@ function Uploader({ multiple = false }: UploaderProps) {
                     createQueryString("uploaded_image", fileObjectName) + "&";
                 uploadedImagesQueryStringArray.push(fileQueryString);
             }
-            const uploadedImagesQueryString = uploadedImagesQueryStringArray.join("");
+            const uploadedImagesQueryString =
+                uploadedImagesQueryStringArray.join("");
             toast(
                 <div className="flex gap-8 items-center p-2">
                     <p className="text-base text-right">
-                        Images ready to be converted to PDF. Redirecting to
-                        convert page...
+                        {uploaderType === "image"
+                            ? `Images ready to be converted to PDF. Redirecting to
+                        convert page...`
+                            : `PDFs ready to be merged. Redirecting to
+                        convert page...`}
                     </p>
                     <CircleCheck className="h-12 w-12" />
                 </div>,
@@ -187,7 +206,9 @@ function Uploader({ multiple = false }: UploaderProps) {
                     duration: 3000,
                 }
             );
-            router.push("/multiple-images-to-pdf?" + uploadedImagesQueryString);
+            if (uploaderType === "image") router.push("/multiple-images-to-pdf?" + uploadedImagesQueryString);
+            // else router.push("")
+            console.log("upload result : ", result)
         } catch (error) {
             console.error(
                 "Error happened while processing storage data to database. Errors : ",

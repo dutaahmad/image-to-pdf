@@ -87,14 +87,25 @@ export async function deleteImageByID(image_id: string) {
 }
 
 export async function addPDFDocumentData(addPDFData: AddPDFDocumentData) {
-    return await db
-        .insert(pdf_documents)
-        .values({
-            id: addPDFData.id,
-            name: addPDFData.name,
-            url: addPDFData.url,
-        })
-        .returning();
+    if (addPDFData.is_source)
+        return await db
+            .insert(pdf_documents)
+            .values({
+                id: addPDFData.id,
+                name: addPDFData.name,
+                url: addPDFData.url,
+                is_source: addPDFData.is_source,
+            })
+            .returning();
+    else
+        return await db
+            .insert(pdf_documents)
+            .values({
+                id: addPDFData.id,
+                name: addPDFData.name,
+                url: addPDFData.url,
+            })
+            .returning();
 }
 
 export async function deletePdfByID(pdf_id: string) {

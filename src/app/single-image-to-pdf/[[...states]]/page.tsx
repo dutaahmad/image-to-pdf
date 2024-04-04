@@ -5,7 +5,7 @@ import { Download } from "lucide-react";
 import ImagePreviewCard from "@/components/image-card";
 import ProcessConvertCard from "@/components/process-image-to-pdf-card";
 import { Separator } from "@/components/ui/separator";
-import Uploader from "@/components/image-uploader";
+import ImageUploader from "@/components/image-uploader";
 import supabase from "@/lib/supabase";
 
 import PDFViewer from "@/components/pdf-viewer";
@@ -89,7 +89,7 @@ const SingleImageToPDFPage = async ({
                     converting!
                 </h1>
             </div>
-            <Uploader />
+            <ImageUploader />
         </main>
     );
 };

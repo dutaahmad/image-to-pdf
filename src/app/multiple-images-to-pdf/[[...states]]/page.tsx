@@ -1,6 +1,6 @@
 // "use client";
 import ProcessConvertCard from "@/components/process-image-to-pdf-card";
-import Uploader from "@/components/image-uploader";
+import ImageUploader from "@/components/image-uploader";
 
 import { getImageByID } from "@/server/server-functions";
 import Image from "next/image";
@@ -189,7 +189,7 @@ const MultipleImagesToPDF = async ({
                     start converting!
                 </h1>
             </div>
-            <Uploader multiple />
+            <ImageUploader multiple />
         </main>
     );
 };

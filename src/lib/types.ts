@@ -8,6 +8,7 @@ export type AddPDFDocumentData = {
     id: string;
     name: string;
     url: string;
+    is_source?: boolean;
 };
 
 export enum PageSize {

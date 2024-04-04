@@ -1,5 +1,6 @@
 import { relations, sql } from "drizzle-orm";
 import {
+    boolean,
     index,
     integer,
     pgTableCreator,
@@ -35,6 +36,7 @@ export const pdf_documents = createTable("pdf_documents", {
     id: uuid("id").primaryKey().defaultRandom(),
     name: varchar("name", { length: 256 }),
     url: varchar("url", { length: 1000 }),
+    is_source: boolean("is_source"),
     createdAt: timestamp("created_at")
         .default(sql`CURRENT_TIMESTAMP`)
         .notNull(),
