@@ -11,6 +11,9 @@ const nextConfig = {
         loader: "custom",
         loaderFile: "./supabase.image.loader.js",
     },
+    experimental: {
+        missingSuspenseWithCSRBailout: false,
+    },
 };
 
 export default nextConfig;

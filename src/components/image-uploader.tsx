@@ -1,5 +1,5 @@
 "use client";
-import { useCallback, useEffect, useState } from "react";
+import { Suspense, useCallback, useEffect, useState } from "react";
 import { DialogProps } from "@radix-ui/react-dialog";
 import { CircleCheck, Cross } from "lucide-react";
 
@@ -244,37 +244,39 @@ function Uploader({ multiple = false }: UploaderProps) {
     }, [onSingleUploadSuccess, onUploadsComplete]);
 
     return (
-        <Dialog>
-            <DialogTrigger asChild disabled={!!states}>
-                <Button>Upload</Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-md max-w-sm">
-                <DialogHeader>
-                    <DialogTitle>Upload Image</DialogTitle>
-                    <DialogDescription>
-                        Upload your desired image to be converted to PDF.
-                    </DialogDescription>
-                </DialogHeader>
-                <div className="w-full space-y-[1rem]">
-                    <Dashboard uppy={uppy} hideUploadButton />
-                    <Button
-                        onClick={handleUpload}
-                        type="button"
-                        className="w-full"
-                        disabled={!isThereFile}
-                    >
-                        Upload
-                    </Button>
-                </div>
-                <DialogFooter className="sm:justify-start">
-                    <DialogClose asChild>
-                        <Button type="button" variant="secondary">
-                            Close
+        <Suspense>
+            <Dialog>
+                <DialogTrigger asChild disabled={!!states}>
+                    <Button>Upload</Button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-md max-w-sm">
+                    <DialogHeader>
+                        <DialogTitle>Upload Image</DialogTitle>
+                        <DialogDescription>
+                            Upload your desired image to be converted to PDF.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <div className="w-full space-y-[1rem]">
+                        <Dashboard uppy={uppy} hideUploadButton />
+                        <Button
+                            onClick={handleUpload}
+                            type="button"
+                            className="w-full"
+                            disabled={!isThereFile}
+                        >
+                            Upload
                         </Button>
-                    </DialogClose>
-                </DialogFooter>
-            </DialogContent>
-        </Dialog>
+                    </div>
+                    <DialogFooter className="sm:justify-start">
+                        <DialogClose asChild>
+                            <Button type="button" variant="secondary">
+                                Close
+                            </Button>
+                        </DialogClose>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
+        </Suspense>
     );
 }
 

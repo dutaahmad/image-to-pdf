@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { Suspense } from "react";
 import Link from "next/link";
 import { ModeToggle } from "./theme-toggle";
 import {
@@ -39,75 +39,82 @@ const NavbarSimplified = () => {
         const image_id = params.states[0];
         const pdf_id = params.states[1];
         return (
-            // <div className="fixed flex items-center justify-between inset-x-4 top-4">
-            <div className="fixed inset-x-0 top-0 z-10 flex items-center justify-between p-6 px-4 mx-auto bg-opacity-50 border shadow-lg md:px-6 bg-white/40 dark:bg-white/5 backdrop-filter backdrop-blur-md">
-                <Button
-                    variant={"ghost"}
-                    size={"icon"}
-                    type="button"
-                    onClick={async () => {
-                        await deleteImageByID(image_id);
-                        if (pdf_id) await deletePdfByID(pdf_id);
-                        router.push("/");
-                    }}
-                >
-                    <ChevronLeftIcon className="w-4 h-4" />
-                </Button>
-                <h1 className="text-lg font-semibold tracking-tight scroll-m-20 md:text-2xl ">
-                    {pageTitle}
-                </h1>
-                <ModeToggle />
-            </div>
+            <Suspense>
+                <div className="fixed inset-x-0 top-0 z-10 flex items-center justify-between p-6 px-4 mx-auto bg-opacity-50 border shadow-lg md:px-6 bg-white/40 dark:bg-white/5 backdrop-filter backdrop-blur-md">
+                    <Button
+                        variant={"ghost"}
+                        size={"icon"}
+                        type="button"
+                        onClick={async () => {
+                            await deleteImageByID(image_id);
+                            if (pdf_id) await deletePdfByID(pdf_id);
+                            router.push("/");
+                        }}
+                    >
+                        <ChevronLeftIcon className="w-4 h-4" />
+                    </Button>
+                    <h1 className="text-lg font-semibold tracking-tight scroll-m-20 md:text-2xl ">
+                        {pageTitle}
+                    </h1>
+                    <ModeToggle />
+                </div>
+            </Suspense>
         );
     }
 
     if (uploadedURLQuery) {
         return (
-            <div className="fixed inset-x-0 top-0 z-10 flex items-center justify-between p-6 px-4 mx-auto bg-opacity-50 border shadow-lg md:px-6 bg-white/40 dark:bg-white/5 backdrop-filter backdrop-blur-md">
-                <Button
-                    variant={"ghost"}
-                    size={"icon"}
-                    type="button"
-                    onClick={async () => {
-                        for (const image_id of uploadedURLQuery) {
-                            await deleteImageByID(image_id);
-                            // if (pdf_id) await deletePdfByID(pdf_id);
-                        }
-                        router.push("/");
-                    }}
-                >
-                    <ChevronLeftIcon className="w-4 h-4" />
-                </Button>
-                <h1 className="text-lg font-semibold tracking-tight scroll-m-20 md:text-2xl ">
-                    {pageTitle}
-                </h1>
-                <ModeToggle />
-            </div>
+            <Suspense>
+                <div className="fixed inset-x-0 top-0 z-10 flex items-center justify-between p-6 px-4 mx-auto bg-opacity-50 border shadow-lg md:px-6 bg-white/40 dark:bg-white/5 backdrop-filter backdrop-blur-md">
+                    <Button
+                        variant={"ghost"}
+                        size={"icon"}
+                        type="button"
+                        onClick={async () => {
+                            for (const image_id of uploadedURLQuery) {
+                                await deleteImageByID(image_id);
+                                // if (pdf_id) await deletePdfByID(pdf_id);
+                            }
+                            router.push("/");
+                        }}
+                    >
+                        <ChevronLeftIcon className="w-4 h-4" />
+                    </Button>
+                    <h1 className="text-lg font-semibold tracking-tight scroll-m-20 md:text-2xl ">
+                        {pageTitle}
+                    </h1>
+                    <ModeToggle />
+                </div>
+            </Suspense>
         );
     }
 
     if (path !== "/")
         return (
-            <div className="fixed inset-x-0 top-0 z-10 flex items-center justify-between p-6 px-4 mx-auto bg-opacity-50 border shadow-lg md:px-6 bg-white/40 dark:bg-white/5 backdrop-filter backdrop-blur-md">
-                <Button variant={"ghost"} size={"icon"} asChild>
-                    <Link href={"/"}>
-                        <ChevronLeftIcon className="w-4 h-4" />
-                    </Link>
-                </Button>
-                <h1 className="text-lg font-semibold tracking-tight scroll-m-20 md:text-2xl ">
-                    {pageTitle}
-                </h1>
-                <ModeToggle />
-            </div>
+            <Suspense>
+                <div className="fixed inset-x-0 top-0 z-10 flex items-center justify-between p-6 px-4 mx-auto bg-opacity-50 border shadow-lg md:px-6 bg-white/40 dark:bg-white/5 backdrop-filter backdrop-blur-md">
+                    <Button variant={"ghost"} size={"icon"} asChild>
+                        <Link href={"/"}>
+                            <ChevronLeftIcon className="w-4 h-4" />
+                        </Link>
+                    </Button>
+                    <h1 className="text-lg font-semibold tracking-tight scroll-m-20 md:text-2xl ">
+                        {pageTitle}
+                    </h1>
+                    <ModeToggle />
+                </div>
+            </Suspense>
         );
     else
         return (
-            <div className="fixed inset-x-4 top-4">
-                <DemoDisclaimer />
-                <div className="flex justify-end">
-                    <ModeToggle />
+            <Suspense>
+                <div className="fixed inset-x-4 top-4">
+                    <DemoDisclaimer />
+                    <div className="flex justify-end">
+                        <ModeToggle />
+                    </div>
                 </div>
-            </div>
+            </Suspense>
         );
 };
 
