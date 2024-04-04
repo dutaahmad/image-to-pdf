@@ -3,11 +3,11 @@
 import { cn } from "@/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 
-const PDFViewIframe = ({ pdf_url }: { pdf_url: string }) => {
+const PDFViewIframe = ({ pdf_url, className = "" }: { pdf_url: string, className?: string }) => {
     return (
         <Card
             className={cn(
-                "h-[70vh] md:h-[80vh] md:w-[60%] flex flex-col gap-4"
+                "h-[70vh] md:h-[80vh] md:w-[60%] flex flex-col gap-4", className
             )}
         >
             <CardHeader>

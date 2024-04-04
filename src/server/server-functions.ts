@@ -122,6 +122,23 @@ export async function getPDFDocumentData(pdf_id: string) {
     )[0];
 }
 
+const createQueryStringServer = (
+    name: string,
+    value: string,
+    baseQueryString?: string
+) => {
+    if (baseQueryString) {
+        const params = new URLSearchParams(baseQueryString);
+        params.set(name, value);
+
+        return params.toString();
+    }
+    const params = new URLSearchParams();
+    params.set(name, value);
+
+    return params.toString();
+};
+
 /**
  * Converts an image to a PDF document and uploads it to a Supabase storage bucket.
  *

@@ -135,7 +135,7 @@ function ProcessUploadedImage({ image_id, className, ...props }: CardProps) {
                             </div>
                         </RadioGroup>
                     </div>
-                    <SubmitButton />
+                    <SubmitButton buttonName={"Convert Singless"} />
                 </form>
             </CardContent>
             <CardFooter className="flex gap-2">
