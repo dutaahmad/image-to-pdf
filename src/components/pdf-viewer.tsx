@@ -3,7 +3,7 @@
 import { cn } from "@/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 
-const PDFViewIframe = ({ pdf_url, className = "" }: { pdf_url: string, className?: string }) => {
+const PDFViewIframe = ({ pdf_url, className = "", iFrameTitle = "PDF Result" }: { pdf_url: string, className?: string, iFrameTitle?: string }) => {
     return (
         <Card
             className={cn(
@@ -12,7 +12,7 @@ const PDFViewIframe = ({ pdf_url, className = "" }: { pdf_url: string, className
         >
             <CardHeader>
                 <CardTitle className="scroll-m-20 border-b pb-2 text-xl md:text-3xl font-semibold tracking-tight transition-colors first:mt-0">
-                    PDF Result
+                    {iFrameTitle}
                 </CardTitle>
             </CardHeader>
             <CardContent className="w-[98%] h-[98%] aspect-auto relative">

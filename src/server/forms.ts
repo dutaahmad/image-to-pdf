@@ -1,9 +1,19 @@
 "use server";
 import { redirect } from "next/navigation";
 
-import { ConvertPDFFormState, PageOrientation, PageSize } from "@/lib/types";
-import { addPDFDocumentData, convertToPDF } from "./server-functions";
+import {
+    ConvertPDFFormState,
+    MergePDFs,
+    PageOrientation,
+    PageSize,
+} from "@/lib/types";
+import {
+    addPDFDocumentData,
+    convertToPDF,
+    mergePDFs,
+} from "./server-functions";
 import supabase from "@/lib/supabase";
+import { Redirect } from "next";
 
 export async function onConvertPDFPostAction(
     image_id: string,
@@ -134,8 +144,41 @@ export async function onConvertMultiplePDFPostAction(
                 };
         }
         const urlQueryString = urlQueryStringArray.join("");
-        redirect(urlQueryString)
+        redirect(urlQueryString);
     } catch (error) {
         throw error;
     }
+}
+
+export async function mergePDFsForm(pdf_ids: string[], formData: FormData) {
+    const urlQueryStringArray: string[] = ["/merge-pdfs?"];
+
+    const mergeData: MergePDFs = pdf_ids.map((pdf_id) => {
+        const usedPageSize = formData.get("page_size_" + pdf_id) as PageSize;
+        const usedPageOrientation = formData.get(
+            "page_orientation_" + pdf_id
+        ) as PageOrientation;
+        return {
+            page_id: pdf_id,
+            page_size: usedPageSize,
+            page_orientation: usedPageOrientation,
+        };
+    });
+    console.log("to be merged : ", mergeData);
+    const merge = await mergePDFs(mergeData);
+
+    if (merge)
+        return {
+            message: "Success merging PDF!",
+            status: true,
+            errors: null,
+            data: merge,
+        };
+    else
+        return {
+            message: "Error merging PDF!",
+            status: true,
+            errors: merge,
+            data: null,
+        };
 }

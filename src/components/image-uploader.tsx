@@ -150,7 +150,7 @@ function Uploader({ multiple = false, uploaderType = "image" }: UploaderProps) {
     ) => {
         try {
             const files = result.successful;
-            const uploadedImagesQueryStringArray: string[] = [];
+            const uploadedFileQueryStringArray: string[] = [];
             for (const file of files) {
                 // @ts-ignore
                 const fileObjectName: string = file.meta.objectName;
@@ -184,12 +184,22 @@ function Uploader({ multiple = false, uploaderType = "image" }: UploaderProps) {
                         duration: 3000,
                     }
                 );
-                const fileQueryString =
-                    createQueryString("uploaded_image", fileObjectName) + "&";
-                uploadedImagesQueryStringArray.push(fileQueryString);
+                if (uploaderType === "image") {
+                    const fileQueryString =
+                        createQueryString("uploaded_image", fileObjectName) +
+                        "&";
+                    uploadedFileQueryStringArray.push(fileQueryString);
+                } else {
+                    const fileQueryString =
+                        createQueryString(
+                            "uploaded_source_pdf",
+                            fileObjectName
+                        ) + "&";
+                    uploadedFileQueryStringArray.push(fileQueryString);
+                }
             }
-            const uploadedImagesQueryString =
-                uploadedImagesQueryStringArray.join("");
+            const uploadedFileQueryString =
+                uploadedFileQueryStringArray.join("");
             toast(
                 <div className="flex gap-8 items-center p-2">
                     <p className="text-base text-right">
@@ -206,9 +216,11 @@ function Uploader({ multiple = false, uploaderType = "image" }: UploaderProps) {
                     duration: 3000,
                 }
             );
-            if (uploaderType === "image") router.push("/multiple-images-to-pdf?" + uploadedImagesQueryString);
-            // else router.push("")
-            console.log("upload result : ", result)
+            if (uploaderType === "image")
+                router.push(
+                    "/multiple-images-to-pdf?" + uploadedFileQueryString
+                );
+            else router.push("/merge-pdfs?" + uploadedFileQueryString);
         } catch (error) {
             console.error(
                 "Error happened while processing storage data to database. Errors : ",

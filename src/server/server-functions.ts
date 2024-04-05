@@ -11,6 +11,7 @@ import {
     AddImageData,
     AddPDFDocumentData,
     ConvertPDFProps,
+    MergePDFs,
     PageOrientation,
     PageSize,
 } from "@/lib/types";
@@ -239,5 +240,39 @@ export async function convertToPDF({
                     error.message,
             };
         else throw "Unknown error while converting image to pdf!";
+    }
+}
+
+/**
+ * Merges multiple PDF documents into a single PDF document.
+ */
+export async function mergePDFs(params: MergePDFs) {
+    // Function implementation goes here
+    try {
+        const pdfDoc = await PDFDocument.create();
+
+        const newPDFID = await generateUUID();
+        await Promise.all(
+            params.map(async (pdf, index) => {
+                const sourcePDFBuffer = await (
+                    await supabase.storage.from("pdfs").download(pdf.page_id)
+                ).data!.arrayBuffer();
+                const loadedPDF = await PDFDocument.load(sourcePDFBuffer);
+                const [pdfPage] = await pdfDoc.copyPages(loadedPDF, [index]);
+
+                // pdfDoc.addPage();
+
+                pdfDoc.insertPage(index, pdfPage);
+            })
+        );
+        const pdfBuffer = await pdfDoc.save();
+        const { data, error } = await supabase.storage
+            .from("pdfs")
+            .upload(newPDFID, pdfBuffer);
+
+        if (data) return data;
+        else return error;
+    } catch (error) {
+        if (error instanceof Error) throw error;
     }
 }

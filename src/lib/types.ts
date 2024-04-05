@@ -13,19 +13,19 @@ export type AddPDFDocumentData = {
 
 export enum PageSize {
     A4 = "A4",
-    F4 = "F4"
+    F4 = "F4",
 }
 
 export enum PageOrientation {
     PORTRAIT = "portrait",
-    LANDSCAPE = "landscape"
+    LANDSCAPE = "landscape",
 }
 
 export type ConvertPDFProps = {
     image_id: string;
     page_size: PageSize;
     page_orientation: PageOrientation;
-}
+};
 
 export type ConvertPDFFormState = {
     status: boolean;
@@ -34,3 +34,17 @@ export type ConvertPDFFormState = {
         path: string;
     };
 };
+
+export type PDFSourceIDs = {
+    pdf_source_ids: string[];
+};
+
+export type ImageSourceIDs = {
+    images_source_ids: string[];
+};
+
+export type MergePDFs = {
+    page_id: string;
+    page_size: PageSize;
+    page_orientation: PageOrientation;
+}[]
