@@ -11,6 +11,7 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { PageOrientation, PageSize } from "@/lib/types";
 import SubmitButton from "@/components/submit-button";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 const MergePDFs = async ({
     params,
@@ -29,28 +30,32 @@ const MergePDFs = async ({
         return (
             <main className="flex flex-col items-center justify-center min-h-screen gap-8">
                 <h1 className="mt-[8rem] font-semibold leading-none tracking-tight">
-                    List of Uploaded PDFs
+                    List of To Be Merged PDFs
                 </h1>
-                <div className="max-h-fit w-[90%] grid grid-cols-2 gap-6 mb-6">
-                    {pdf_ids.map((pdf_id, index) => {
-                        const {
-                            data: { publicUrl: pdf_url },
-                        } = supabase.storage.from("pdfs").getPublicUrl(pdf_id);
-                        return (
-                            <PDFViewIframe
-                                iFrameTitle={
-                                    "(To be Merged) Page " + (index + 1)
-                                }
-                                className="w-[90%] md:w-full"
-                                key={pdf_id}
-                                pdf_url={pdf_url}
-                            />
-                        );
-                    })}
-                    <Card>
+                <div className="max-h-[70vh] w-[90%] flex gap-6 mb-6">
+                    {/* <div className="flex-1 bg-red-400"> */}
+                    <ScrollArea className="flex-1 rounded-md border">
+                        {pdf_ids.map((pdf_id, index) => {
+                            const {
+                                data: { publicUrl: pdf_url },
+                            } = supabase.storage.from("pdfs").getPublicUrl(pdf_id);
+                            return (
+                                <PDFViewIframe
+                                    iFrameTitle={
+                                        "(To be Merged) Page " + (index + 1)
+                                    }
+                                    className="w-[90%] md:w-[90%] mx-auto my-8"
+                                    key={pdf_id}
+                                    pdf_url={pdf_url}
+                                />
+                            );
+                        })}
+                    </ScrollArea>
+                    {/* </div> */}
+                    <Card className="flex-1">
                         <CardHeader>
                             <CardTitle className="scroll-m-20 border-b pb-2 text-xl md:text-3xl font-semibold tracking-tight transition-colors first:mt-0">
-                                Convert Options
+                                Merge Options
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
@@ -61,12 +66,12 @@ const MergePDFs = async ({
                             //     console.log(formData);
                             // }}
                             >
-                                {pdf_ids.map((pdf_id, index) => (
+                                {/* {pdf_ids.map((pdf_id, index) => (
                                     <div key={index} className=" flex flex-col justify-center h-full">
                                         <p className="scroll-m-20 border-b pb-2 text-lg font-semibold tracking-tight transition-colors first:mt-0">
                                             Page {index + 1} options :{" "}
                                         </p>
-                                        <div className="flex gap-4 md:pb-4">
+                                        <div className="flex gap-12 md:pb-4">
                                             <div>
                                                 <Label
                                                     className="text-xs"
@@ -148,7 +153,7 @@ const MergePDFs = async ({
                                             </div>
                                         </div>
                                     </div>
-                                ))}
+                                ))} */}
                                 <SubmitButton buttonName="Merge" />
                             </form>
                         </CardContent>

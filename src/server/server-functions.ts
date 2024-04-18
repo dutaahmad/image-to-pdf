@@ -252,23 +252,29 @@ export async function mergePDFs(params: MergePDFs) {
         const pdfDoc = await PDFDocument.create();
 
         const newPDFID = await generateUUID();
+        // const newPDFName = newPDFID + ".pdf";
         await Promise.all(
             params.map(async (pdf, index) => {
                 const sourcePDFBuffer = await (
                     await supabase.storage.from("pdfs").download(pdf.page_id)
                 ).data!.arrayBuffer();
                 const loadedPDF = await PDFDocument.load(sourcePDFBuffer);
-                const [pdfPage] = await pdfDoc.copyPages(loadedPDF, [index]);
+                // const [pdfPage] = await pdfDoc.copyPages(loadedPDF, [index]);
+                const copiedPagesA = await pdfDoc.copyPages(
+                    loadedPDF,
+                    loadedPDF.getPageIndices()
+                );
+                copiedPagesA.forEach((page) => pdfDoc.addPage(page));
 
                 // pdfDoc.addPage();
 
-                pdfDoc.insertPage(index, pdfPage);
+                // pdfDoc.insertPage(index, pdfPage);
             })
         );
         const pdfBuffer = await pdfDoc.save();
         const { data, error } = await supabase.storage
             .from("pdfs")
-            .upload(newPDFID, pdfBuffer);
+            .upload(newPDFID, pdfBuffer, { contentType: "application/pdf" });
 
         if (data) return data;
         else return error;

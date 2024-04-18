@@ -45,6 +45,6 @@ export type ImageSourceIDs = {
 
 export type MergePDFs = {
     page_id: string;
-    page_size: PageSize;
-    page_orientation: PageOrientation;
+    // page_size: PageSize;
+    // page_orientation: PageOrientation;
 }[]

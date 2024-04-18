@@ -154,14 +154,14 @@ export async function mergePDFsForm(pdf_ids: string[], formData: FormData) {
     const urlQueryStringArray: string[] = ["/merge-pdfs?"];
 
     const mergeData: MergePDFs = pdf_ids.map((pdf_id) => {
-        const usedPageSize = formData.get("page_size_" + pdf_id) as PageSize;
-        const usedPageOrientation = formData.get(
-            "page_orientation_" + pdf_id
-        ) as PageOrientation;
+        // const usedPageSize = formData.get("page_size_" + pdf_id) as PageSize;
+        // const usedPageOrientation = formData.get(
+        //     "page_orientation_" + pdf_id
+        // ) as PageOrientation;
         return {
             page_id: pdf_id,
-            page_size: usedPageSize,
-            page_orientation: usedPageOrientation,
+            // page_size: usedPageSize,
+            // page_orientation: usedPageOrientation,
         };
     });
     console.log("to be merged : ", mergeData);
