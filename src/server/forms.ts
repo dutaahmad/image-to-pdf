@@ -124,6 +124,7 @@ export async function onConvertMultiplePDFPostAction(
                             id: convertResult.data.path,
                             name: "converted-doc-from-" + reqBody.image_id,
                             url: pdf_url,
+                            is_source: true
                         })
                     )[0];
                     dbPDFAddResults.push(dbPDFAddResult);

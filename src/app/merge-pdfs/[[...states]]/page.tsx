@@ -38,7 +38,9 @@ const MergePDFs = async ({
                         {pdf_ids.map((pdf_id, index) => {
                             const {
                                 data: { publicUrl: pdf_url },
-                            } = supabase.storage.from("pdfs").getPublicUrl(pdf_id);
+                            } = supabase.storage
+                                .from("pdfs")
+                                .getPublicUrl(pdf_id);
                             return (
                                 <PDFViewIframe
                                     iFrameTitle={
@@ -158,6 +160,26 @@ const MergePDFs = async ({
                             </form>
                         </CardContent>
                     </Card>
+                </div>
+            </main>
+        );
+    }
+    if (
+        searchParams &&
+        searchParams["result"] &&
+        typeof searchParams === "object"
+    ) {
+        const pdf_id = searchParams["result"] as string;
+        const {
+            data: { publicUrl: pdf_url },
+        } = supabase.storage.from("pdfs").getPublicUrl(pdf_id);
+        return (
+            <main className="flex flex-col items-center justify-center min-h-screen gap-8">
+                <h1 className="mt-[8rem] scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight transition-colors">
+                    Merge Multiple PDF to Single PDF Result:
+                </h1>
+                <div className="max-h-fit w-[90%] grid grid-cols-1 gap-6">
+                    <PDFViewIframe className="w-[90%] md:w-[90%] md:h-[100vh] m-auto" key={pdf_id} pdf_url={pdf_url} />;
                 </div>
             </main>
         );

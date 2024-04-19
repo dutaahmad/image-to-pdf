@@ -13,6 +13,7 @@ import { Button } from "./ui/button";
 import { ChevronLeftIcon } from "@radix-ui/react-icons";
 import { deleteImageByID, deletePdfByID } from "@/server/server-functions";
 import { DemoDisclaimer } from "./demo-disclaimer";
+import Loader from "./loader";
 
 const NavbarSimplified = () => {
     const router = useRouter();
@@ -41,7 +42,7 @@ const NavbarSimplified = () => {
         const image_id = params.states[0];
         const pdf_id = params.states[1];
         return (
-            <Suspense>
+            <Suspense fallback={<Loader />} >
                 <div className="fixed inset-x-0 top-0 z-10 flex items-center justify-between p-6 px-4 mx-auto bg-opacity-50 border shadow-lg md:px-6 bg-white/40 dark:bg-white/5 backdrop-filter backdrop-blur-md">
                     <Button
                         variant={"ghost"}
@@ -67,7 +68,7 @@ const NavbarSimplified = () => {
     if (uploadedURLQuery) {
         console.log("this is multiple image to pdf page uploadedURLQuery : ", uploadedURLQuery);
         return (
-            <Suspense>
+            <Suspense fallback={<Loader />} >
                 <div className="fixed inset-x-0 top-0 z-10 flex items-center justify-between p-6 px-4 mx-auto bg-opacity-50 border shadow-lg md:px-6 bg-white/40 dark:bg-white/5 backdrop-filter backdrop-blur-md">
                     <Button
                         variant={"ghost"}
@@ -94,7 +95,7 @@ const NavbarSimplified = () => {
 
     if (path !== "/")
         return (
-            <Suspense>
+            <Suspense fallback={<Loader />} >
                 <div className="fixed inset-x-0 top-0 z-10 flex items-center justify-between p-6 px-4 mx-auto bg-opacity-50 border shadow-lg md:px-6 bg-white/40 dark:bg-white/5 backdrop-filter backdrop-blur-md">
                     <Button variant={"ghost"} size={"icon"} asChild>
                         <Link href={"/"}>
@@ -110,7 +111,7 @@ const NavbarSimplified = () => {
         );
     else
         return (
-            <Suspense>
+            <Suspense fallback={<Loader />} >
                 <div className="fixed inset-x-4 top-4">
                     <DemoDisclaimer />
                     <div className="flex justify-end">

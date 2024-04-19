@@ -164,7 +164,6 @@ const MultipleImagesToPDF = async ({
         searchParams["pdf_res"] &&
         typeof searchParams === "object"
     ) {
-        // const pdf_ids = searchParams["pdf_res"] as string[];
         const pdf_id = searchParams["pdf_res"] as string;
         const {
             data: { publicUrl: pdf_url },
@@ -175,12 +174,6 @@ const MultipleImagesToPDF = async ({
                     Multiple Images to Single PDF Result:
                 </h1>
                 <div className="max-h-fit w-[90%] grid grid-cols-1 gap-6">
-                    {/* {pdf_ids.map((pdf_id) => {
-                        const {
-                            data: { publicUrl: pdf_url },
-                        } = supabase.storage.from("pdfs").getPublicUrl(pdf_id);
-                        return <PDFViewIframe className="w-[90%] md:w-[90%]" key={pdf_id} pdf_url={pdf_url} />;
-                    })} */}
                     <PDFViewIframe className="w-[90%] md:w-[90%] md:h-[100vh] m-auto" key={pdf_id} pdf_url={pdf_url} />;
                 </div>
             </main>
