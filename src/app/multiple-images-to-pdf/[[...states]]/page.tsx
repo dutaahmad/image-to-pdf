@@ -164,19 +164,24 @@ const MultipleImagesToPDF = async ({
         searchParams["pdf_res"] &&
         typeof searchParams === "object"
     ) {
-        const pdf_ids = searchParams["pdf_res"] as string[];
+        // const pdf_ids = searchParams["pdf_res"] as string[];
+        const pdf_id = searchParams["pdf_res"] as string;
+        const {
+            data: { publicUrl: pdf_url },
+        } = supabase.storage.from("pdfs").getPublicUrl(pdf_id);
         return (
             <main className="flex flex-col items-center justify-center min-h-screen gap-8">
-                <h1 className="mt-[8rem] font-semibold leading-none tracking-tight">
-                    List of Converted PDFs
+                <h1 className="mt-[8rem] scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight transition-colors">
+                    Multiple Images to Single PDF Result:
                 </h1>
                 <div className="max-h-fit w-[90%] grid grid-cols-1 gap-6">
-                    {pdf_ids.map((pdf_id) => {
+                    {/* {pdf_ids.map((pdf_id) => {
                         const {
                             data: { publicUrl: pdf_url },
                         } = supabase.storage.from("pdfs").getPublicUrl(pdf_id);
                         return <PDFViewIframe className="w-[90%] md:w-[90%]" key={pdf_id} pdf_url={pdf_url} />;
-                    })}
+                    })} */}
+                    <PDFViewIframe className="w-[90%] md:w-[90%] md:h-[100vh] m-auto" key={pdf_id} pdf_url={pdf_url} />;
                 </div>
             </main>
         );

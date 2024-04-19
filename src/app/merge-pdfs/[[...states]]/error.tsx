@@ -28,11 +28,11 @@ export default function Error({
         //         Try again
         //     </button>
         // </div>
-        <div className="w-full min-h-screen flex flex-col items-center justify-center">
-            <div className="flex items-center justify-evenly">
-                <p>Error</p>
+        <div className="w-[50%] min-h-screen flex flex-col items-center justify-center m-auto gap-8">
+            <div className="flex items-center justify-evenly h-[5rem] w-[30%]">
+                <p className="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight transition-colors">Error</p>
                 <Separator orientation="vertical" />
-                <p>{error.name}</p>
+                <p className="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight transition-colors">{error.name}</p>
             </div>
             <Separator />
             <p>{error.message}</p>

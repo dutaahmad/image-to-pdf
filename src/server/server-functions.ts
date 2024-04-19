@@ -16,6 +16,8 @@ import {
     PageSize,
 } from "@/lib/types";
 
+import { StorageError } from "@supabase/storage-js/src/lib/errors";
+
 export const generateUUID = () => randomUUID();
 
 export const getDBURL = () => {
@@ -277,8 +279,9 @@ export async function mergePDFs(params: MergePDFs) {
             .upload(newPDFID, pdfBuffer, { contentType: "application/pdf" });
 
         if (data) return data;
-        else return error;
+        else throw error;
     } catch (error) {
         if (error instanceof Error) throw error;
+        else throw new Error("Server Error while merging pdfs");
     }
 }

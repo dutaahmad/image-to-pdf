@@ -22,6 +22,8 @@ const NavbarSimplified = () => {
 
     const uploadedURLQuery = searchParams.getAll("uploaded_image");
 
+    // const convertedMultiplePdfs = sea
+
     const pageTitle = path
         .split("/")[1]
         .split("-")
@@ -63,6 +65,7 @@ const NavbarSimplified = () => {
     }
 
     if (uploadedURLQuery) {
+        console.log("this is multiple image to pdf page uploadedURLQuery : ", uploadedURLQuery);
         return (
             <Suspense>
                 <div className="fixed inset-x-0 top-0 z-10 flex items-center justify-between p-6 px-4 mx-auto bg-opacity-50 border shadow-lg md:px-6 bg-white/40 dark:bg-white/5 backdrop-filter backdrop-blur-md">

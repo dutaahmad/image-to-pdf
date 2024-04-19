@@ -13,7 +13,8 @@ import {
     mergePDFs,
 } from "./server-functions";
 import supabase from "@/lib/supabase";
-import { Redirect } from "next";
+
+import { StorageError } from "@supabase/storage-js/src/lib/errors";
 
 export async function onConvertPDFPostAction(
     image_id: string,
@@ -93,6 +94,7 @@ export async function onConvertMultiplePDFPostAction(
         updatedAt: Date | null;
     }[] = [];
     const urlQueryStringArray: string[] = ["/multiple-images-to-pdf?"];
+    const imageIdConcat = image_ids.join("&");
     try {
         for (const image_id of image_ids) {
             const usedPageSize = formData.get("page_size_" + image_id);
@@ -125,9 +127,9 @@ export async function onConvertMultiplePDFPostAction(
                         })
                     )[0];
                     dbPDFAddResults.push(dbPDFAddResult);
-                    urlQueryStringArray.push(
-                        "pdf_res=" + dbPDFAddResult.id + "&"
-                    );
+                    // urlQueryStringArray.push(
+                    //     "pdf_res=" + dbPDFAddResult.id + "&"
+                    // );
                 } else
                     return {
                         status: false,
@@ -143,6 +145,21 @@ export async function onConvertMultiplePDFPostAction(
                     data: { path: "" },
                 };
         }
+        const mergeResult = await mergePDFs(
+            dbPDFAddResults.map((item) => ({ page_id: item.id }))
+        );
+
+        const {
+            data: { publicUrl: pdf_url },
+        } = supabase.storage.from("pdfs").getPublicUrl(mergeResult.path);
+        const dbPDFAddResult = await addPDFDocumentData({
+            id: mergeResult.path,
+            name: "merged-docs-from-" + imageIdConcat,
+            url: pdf_url,
+            is_source: false,
+        });
+
+        urlQueryStringArray.push(`pdf_res=${dbPDFAddResult[0].id}`);
         const urlQueryString = urlQueryStringArray.join("");
         redirect(urlQueryString);
     } catch (error) {
@@ -152,33 +169,32 @@ export async function onConvertMultiplePDFPostAction(
 
 export async function mergePDFsForm(pdf_ids: string[], formData: FormData) {
     const urlQueryStringArray: string[] = ["/merge-pdfs?"];
-
-    const mergeData: MergePDFs = pdf_ids.map((pdf_id) => {
-        // const usedPageSize = formData.get("page_size_" + pdf_id) as PageSize;
-        // const usedPageOrientation = formData.get(
-        //     "page_orientation_" + pdf_id
-        // ) as PageOrientation;
-        return {
-            page_id: pdf_id,
-            // page_size: usedPageSize,
-            // page_orientation: usedPageOrientation,
-        };
-    });
+    const pdfIdConcat = pdf_ids.join("&");
+    const mergeData: MergePDFs = pdf_ids.map((pdf_id) => ({
+        page_id: pdf_id,
+    }));
     console.log("to be merged : ", mergeData);
-    const merge = await mergePDFs(mergeData);
-
-    if (merge)
+    try {
+        const merge = await mergePDFs(mergeData);
+        const {
+            data: { publicUrl: pdf_url },
+        } = supabase.storage.from("pdfs").getPublicUrl(merge.path);
+        const dbPDFAddResult = await addPDFDocumentData({
+            id: merge.path,
+            name: "merged-docs-from-" + pdfIdConcat,
+            url: pdf_url,
+            is_source: false,
+        });
+        const urlQueryString = `/merge-pdfs?result=${dbPDFAddResult[0].id}`;
+        redirect(urlQueryString);
         return {
             message: "Success merging PDF!",
             status: true,
             errors: null,
             data: merge,
         };
-    else
-        return {
-            message: "Error merging PDF!",
-            status: true,
-            errors: merge,
-            data: null,
-        };
+    } catch (error) {
+        if (error instanceof Error) throw error;
+        else throw new Error("Unknown Error on Merge PDF Form");
+    }
 }
