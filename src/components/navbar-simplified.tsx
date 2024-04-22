@@ -42,7 +42,7 @@ const NavbarSimplified = () => {
         const image_id = params.states[0];
         const pdf_id = params.states[1];
         return (
-            <Suspense fallback={<Loader />} >
+            <Suspense fallback={<Loader />}>
                 <div className="fixed inset-x-0 top-0 z-10 flex items-center justify-between p-6 px-4 mx-auto bg-opacity-50 border shadow-lg md:px-6 bg-white/40 dark:bg-white/5 backdrop-filter backdrop-blur-md">
                     <Button
                         variant={"ghost"}
@@ -65,10 +65,9 @@ const NavbarSimplified = () => {
         );
     }
 
-    if (uploadedURLQuery) {
-        console.log("this is multiple image to pdf page uploadedURLQuery : ", uploadedURLQuery);
+    if (uploadedURLQuery.length > 0) {
         return (
-            <Suspense fallback={<Loader />} >
+            <Suspense fallback={<Loader />}>
                 <div className="fixed inset-x-0 top-0 z-10 flex items-center justify-between p-6 px-4 mx-auto bg-opacity-50 border shadow-lg md:px-6 bg-white/40 dark:bg-white/5 backdrop-filter backdrop-blur-md">
                     <Button
                         variant={"ghost"}
@@ -95,7 +94,7 @@ const NavbarSimplified = () => {
 
     if (path !== "/")
         return (
-            <Suspense fallback={<Loader />} >
+            <Suspense fallback={<Loader />}>
                 <div className="fixed inset-x-0 top-0 z-10 flex items-center justify-between p-6 px-4 mx-auto bg-opacity-50 border shadow-lg md:px-6 bg-white/40 dark:bg-white/5 backdrop-filter backdrop-blur-md">
                     <Button variant={"ghost"} size={"icon"} asChild>
                         <Link href={"/"}>
@@ -109,12 +108,14 @@ const NavbarSimplified = () => {
                 </div>
             </Suspense>
         );
+    // if ((path === "/") && !uploadedURLQuery && !(path.includes("single-image-to-pdf") && params && params.states))
     else
         return (
-            <Suspense fallback={<Loader />} >
-                <div className="fixed inset-x-4 top-4">
+            <Suspense fallback={<Loader />}>
+                {/* <div className="fixed inset-x-4 top-4"> */}
+                <div className="fixed inset-x-0 top-0 z-10 flex items-center justify-between p-6 px-4 mx-auto bg-opacity-50 border shadow-lg md:px-6 bg-white/40 dark:bg-white/5 backdrop-filter backdrop-blur-md">
                     <DemoDisclaimer />
-                    <div className="flex justify-end">
+                    <div className="flex justify-end flex-1">
                         <ModeToggle />
                     </div>
                 </div>

@@ -53,6 +53,7 @@ export async function onConvertPDFPostAction(
                         id: convertResult.data.path,
                         name: "converted-doc-from-" + reqBody.image_id,
                         url: pdf_url,
+                        is_source: false
                     });
                     redirect(
                         `/single-image-to-pdf/${reqBody.image_id}/${dbPDFAddResult[0].id}`

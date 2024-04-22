@@ -7,6 +7,7 @@ import clsx from "clsx";
 import { ThemeProvider } from "@/components/theme-provider";
 import NavbarSimplified from "@/components/navbar-simplified";
 import { Toaster } from "@/components/ui/sonner";
+import Footer from "@/components/footer";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -34,7 +35,10 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <NavbarSimplified />
-          <main className="h-full w-full ">{children}</main>
+          <main className="h-full w-full ">
+            {children}
+          </main>
+          <Footer />
           <Toaster />
         </ThemeProvider>
         <SpeedInsights />

@@ -183,65 +183,64 @@ export async function convertToPDF({
                     page_orientation === PageOrientation.PORTRAIT
                     ? PageSizes.Legal
                     : ([1008.0, 612.0] as [number, number]);
+    const imageBlob = await getImageFromBucket(image_id);
+    const imageData = await imageBlob?.arrayBuffer();
+    if (imageData) {
+        try {
+            const pdfDoc = await PDFDocument.create();
 
-    try {
-        const imageData = await (await getImageFromBucket(
-            image_id
-        ))!.arrayBuffer();
+            const embedJpegImage = await pdfDoc.embedJpg(imageData);
+            const jpgDims = embedJpegImage.scale(1); // Keep the original image dimensions
+            const page = pdfDoc.addPage(usedPageSize);
 
-        const pdfDoc = await PDFDocument.create();
+            // Calculate the scaling factor to fit the image within the page
+            const scaleX = page.getWidth() / jpgDims.width;
+            const scaleY = page.getHeight() / jpgDims.height;
+            const scale = Math.min(scaleX, scaleY);
 
-        const embedJpegImage = await pdfDoc.embedJpg(imageData);
-        const jpgDims = embedJpegImage.scale(1); // Keep the original image dimensions
-        const page = pdfDoc.addPage(usedPageSize);
+            // Calculate the dimensions of the scaled image
+            const scaledWidth = jpgDims.width * scale;
+            const scaledHeight = jpgDims.height * scale;
 
-        // Calculate the scaling factor to fit the image within the page
-        const scaleX = page.getWidth() / jpgDims.width;
-        const scaleY = page.getHeight() / jpgDims.height;
-        const scale = Math.min(scaleX, scaleY);
+            // Calculate the position to center the image on the page
+            const x = (page.getWidth() - scaledWidth) / 2;
+            const y = (page.getHeight() - scaledHeight) / 2;
 
-        // Calculate the dimensions of the scaled image
-        const scaledWidth = jpgDims.width * scale;
-        const scaledHeight = jpgDims.height * scale;
-
-        // Calculate the position to center the image on the page
-        const x = (page.getWidth() - scaledWidth) / 2;
-        const y = (page.getHeight() - scaledHeight) / 2;
-
-        page.drawImage(embedJpegImage, {
-            x,
-            y,
-            width: scaledWidth,
-            height: scaledHeight,
-        });
-
-        const pdfBytes = await pdfDoc.save();
-
-        const { data, error } = await supabase.storage
-            .from("pdfs")
-            .upload(pdfPath, pdfBytes, { contentType: "application/pdf" });
-        if (data)
-            return {
-                message: "converted pdf uploaded successfully!",
-                data: data,
-            };
-
-        if (error)
-            throw new Error("Error on uploading converted image to pdf!", {
-                cause: error.cause,
+            page.drawImage(embedJpegImage, {
+                x,
+                y,
+                width: scaledWidth,
+                height: scaledHeight,
             });
-    } catch (error) {
-        // if (error instanceof HttpRequestError)
-        if (error instanceof Error)
-            throw {
-                cause: error.cause,
-                stack: error.stack,
-                name: error.name,
-                message:
-                    "Server Error while converting image to pdf! Error : " +
-                    error.message,
-            };
-        else throw "Unknown error while converting image to pdf!";
+
+            const pdfBytes = await pdfDoc.save();
+
+            const { data, error } = await supabase.storage
+                .from("pdfs")
+                .upload(pdfPath, pdfBytes, { contentType: "application/pdf" });
+            if (data)
+                return {
+                    message: "converted pdf uploaded successfully!",
+                    data: data,
+                };
+
+            if (error)
+                throw new Error("Error on uploading converted image to pdf!", {
+                    cause: error.cause,
+                });
+        } catch (error) {
+            // if (error instanceof HttpRequestError)
+            if (error instanceof Error)
+                throw {
+                    cause: error.cause,
+                    stack: error.stack,
+                    name: error.name,
+                    message:
+                        "Server Error while converting image to pdf! Error : " +
+                        error.message,
+                };
+            else throw "Unknown error while converting image to pdf!";
+        }
     }
 }
 
