@@ -14,6 +14,7 @@ import { ChevronLeftIcon } from "@radix-ui/react-icons";
 import { deleteImageByID, deletePdfByID } from "@/server/server-functions";
 import { DemoDisclaimer } from "./demo-disclaimer";
 import Loader from "./loader";
+import TatanationPDFLogo from "./tatanation-pdf-logo";
 
 const NavbarSimplified = () => {
     const router = useRouter();
@@ -98,7 +99,8 @@ const NavbarSimplified = () => {
                 <div className="fixed inset-x-0 top-0 z-10 flex items-center justify-between p-6 px-4 mx-auto bg-opacity-50 border shadow-lg md:px-6 bg-white/40 dark:bg-white/5 backdrop-filter backdrop-blur-md">
                     <Button variant={"ghost"} size={"icon"} asChild>
                         <Link href={"/"}>
-                            <ChevronLeftIcon className="w-4 h-4" />
+                            {/* <ChevronLeftIcon className="w-4 h-4" /> */}
+                            <TatanationPDFLogo className="w-8 md:w-8" />
                         </Link>
                     </Button>
                     <h1 className="text-lg font-semibold tracking-tight scroll-m-20 md:text-2xl ">
@@ -108,14 +110,20 @@ const NavbarSimplified = () => {
                 </div>
             </Suspense>
         );
-    // if ((path === "/") && !uploadedURLQuery && !(path.includes("single-image-to-pdf") && params && params.states))
     else
         return (
             <Suspense fallback={<Loader />}>
                 {/* <div className="fixed inset-x-4 top-4"> */}
                 <div className="fixed inset-x-0 top-0 z-10 flex items-center justify-between p-6 px-4 mx-auto bg-opacity-50 border shadow-lg md:px-6 bg-white/40 dark:bg-white/5 backdrop-filter backdrop-blur-md">
-                    <DemoDisclaimer />
-                    <div className="flex justify-end flex-1">
+                    {/* <DemoDisclaimer /> */}
+                    {/* <TatanationPDFLogo className="w-8 md:w-8" /> */}
+                    <Button variant={"ghost"} size={"icon"} asChild>
+                        <Link href={"/"}>
+                            {/* <ChevronLeftIcon className="w-4 h-4" /> */}
+                            <TatanationPDFLogo className="w-8 md:w-8" />
+                        </Link>
+                    </Button>
+                    <div className="flex justify-end flex-1 gap-4">
                         <ModeToggle />
                     </div>
                 </div>
