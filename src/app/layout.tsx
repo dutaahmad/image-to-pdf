@@ -7,7 +7,10 @@ import clsx from "clsx";
 import { ThemeProvider } from "@/components/theme-provider";
 import NavbarSimplified from "@/components/navbar-simplified";
 import { Toaster } from "@/components/ui/sonner";
-import Footer from "@/components/footer";
+import dynamic from "next/dynamic";
+// import Footer from "@/components/footer";
+
+const Footer = dynamic(() => import("@/components/footer"), { ssr: false })
 
 const inter = Inter({
   subsets: ["latin"],
