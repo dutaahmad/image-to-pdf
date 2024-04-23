@@ -2,13 +2,14 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { SpeedInsights } from '@vercel/speed-insights/next';
 
+import { Analytics } from '@vercel/analytics/react';
+
 import "./globals.css";
 import clsx from "clsx";
 import { ThemeProvider } from "@/components/theme-provider";
 import NavbarSimplified from "@/components/navbar-simplified";
 import { Toaster } from "@/components/ui/sonner";
 import dynamic from "next/dynamic";
-// import Footer from "@/components/footer";
 
 const Footer = dynamic(() => import("@/components/footer"), { ssr: false })
 
@@ -44,6 +45,7 @@ export default function RootLayout({
           <Footer />
           <Toaster />
         </ThemeProvider>
+        <Analytics />
         <SpeedInsights />
       </body>
     </html>
