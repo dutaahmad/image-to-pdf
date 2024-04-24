@@ -29,6 +29,7 @@ import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
 import Spinner from "./spinner";
 import { Input } from "./ui/input";
 import SubmitButton from "./submit-button";
+import supabaseLoader from "../../supabase.image.loader";
 
 type CardProps = { image_id: string } & React.ComponentProps<typeof Card>;
 
@@ -90,6 +91,7 @@ function ProcessUploadedImage({ image_id, className, ...props }: CardProps) {
                         fill
                         className="object-scale-down rounded-lg"
                         priority
+                        loader={supabaseLoader}
                     />
                 </div>
 

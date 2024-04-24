@@ -19,6 +19,9 @@ import { PageOrientation, PageSize } from "@/lib/types";
 import SubmitButton from "@/components/submit-button";
 import PDFViewIframe from "@/components/pdf-viewer";
 import supabase from "@/lib/supabase";
+import supabaseLoader from "../../../../supabase.image.loader";
+import ImageLoad from "../image-load";
+
 
 const MultipleImagesToPDF = async ({
     params,
@@ -60,13 +63,15 @@ const MultipleImagesToPDF = async ({
                                 </CardHeader>
                                 <CardContent className="w-[300px] md:w-[400px] h-[300px]">
                                     <div className="relative w-full h-[85%] rounded-lg aspect-auto">
-                                        <Image
+                                        {/* <Image
                                             src={image_id}
                                             alt="missing image"
                                             fill
                                             className="object-scale-down"
                                             priority
-                                        />
+                                            loader={supabaseLoader}
+                                        /> */}
+                                        <ImageLoad image_id={image_id} />
                                     </div>
                                     <div className="flex gap-4">
                                         <div>

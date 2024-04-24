@@ -10,6 +10,8 @@ import supabase from "@/lib/supabase";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 
+import supabaseLoader from "../../supabase.image.loader.js";
+
 type CardProps = { image_id: string } & React.ComponentProps<typeof Card>;
 
 const ImagePreviewCard = async ({
@@ -52,6 +54,7 @@ const ImagePreviewCard = async ({
                             width={1000} // Set a large width and height to render the full image size
                             height={1000}
                             priority
+                            loader={supabaseLoader}
                         />
                     </div>
                 </CardContent>
