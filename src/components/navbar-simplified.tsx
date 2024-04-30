@@ -114,8 +114,8 @@ const NavbarSimplified = () => {
         return (
             <Suspense fallback={<Loader />}>
                 {/* <div className="fixed inset-x-4 top-4"> */}
+                <DemoDisclaimer />
                 <div className="fixed inset-x-0 top-0 z-10 flex items-center justify-between p-6 px-4 mx-auto bg-opacity-50 border shadow-lg md:px-6 bg-white/40 dark:bg-white/5 backdrop-filter backdrop-blur-md">
-                    {/* <DemoDisclaimer /> */}
                     {/* <TatanationPDFLogo className="w-8 md:w-8" /> */}
                     <Button variant={"ghost"} size={"icon"} asChild>
                         <Link href={"/"}>

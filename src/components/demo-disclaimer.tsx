@@ -10,7 +10,7 @@ import { Cross2Icon } from "@radix-ui/react-icons";
 export function DemoDisclaimer() {
     const [showDisclaimer, setShowDisclaimer] = useState<boolean>(true)
     if (showDisclaimer) return (
-        <Alert className="flex gap-4">
+        <Alert className="flex gap-4 fixed top-24">
             <TriangleAlert className="h-4 w-4" />
             <div className="flex flex-col flex-1">
                 <AlertTitle>Disclaimer!</AlertTitle>
@@ -18,7 +18,7 @@ export function DemoDisclaimer() {
                     This is a work in progress. Bugs, unresponsiveness and rerenders are expected
                 </AlertDescription>
             </div>
-            <Button variant={"ghost"} onClick={() => setShowDisclaimer(!showDisclaimer)}>
+            <Button variant={"ghost"} className="w-fit h-fit" onClick={() => setShowDisclaimer(!showDisclaimer)}>
                 <Cross2Icon className="h-4 w-4" />
             </Button>
         </Alert>
