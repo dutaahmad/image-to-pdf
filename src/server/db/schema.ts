@@ -1,12 +1,16 @@
+import { ImageSourceIDs, PDFSourceIDs } from "@/lib/types";
 import { relations, sql } from "drizzle-orm";
 import {
+  boolean,
   index,
   integer,
+  jsonb,
   pgTableCreator,
   primaryKey,
   serial,
   text,
   timestamp,
+  uuid,
   varchar,
 } from "drizzle-orm/pg-core";
 import { type AdapterAccount } from "next-auth/adapters";
@@ -17,7 +21,7 @@ import { type AdapterAccount } from "next-auth/adapters";
  *
  * @see https://orm.drizzle.team/docs/goodies#multi-project-schema
  */
-export const createTable = pgTableCreator((name) => `image-to-pdf_${name}`);
+export const createTable = pgTableCreator((name) => `tatanation-pdf-toolkit_${name}`);
 
 export const posts = createTable(
   "post",
@@ -121,3 +125,31 @@ export const verificationTokens = createTable(
     compoundKey: primaryKey({ columns: [vt.identifier, vt.token] }),
   })
 );
+
+export const images = createTable("images", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  name: varchar("name", { length: 256 }),
+  url: varchar("url", { length: 1000 }),
+  createdAt: timestamp("created_at")
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+  updatedAt: timestamp("updatedAt"),
+  createdById: varchar("createdById", { length: 255 })
+    .notNull()
+    .references(() => users.id),
+}, (example) => ({
+  createdByIdIdx: index("createdById_idx").on(example.createdById),
+  nameIndex: index("name_idx").on(example.name),
+}));
+
+export const pdf_documents = createTable("pdf_documents", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  name: varchar("name", { length: 256 }),
+  url: varchar("url", { length: 1000 }),
+  is_source: boolean("is_source").notNull().default(false),
+  source_data: jsonb("source_data").$type<PDFSourceIDs | ImageSourceIDs>(),
+  createdAt: timestamp("created_at")
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+  updatedAt: timestamp("updatedAt"),
+});
