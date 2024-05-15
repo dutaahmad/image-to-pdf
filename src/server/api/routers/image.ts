@@ -6,17 +6,10 @@ import {
     publicProcedure,
 } from "@/server/api/trpc";
 import { images } from "@/server/db/schema";
+import { eq } from "drizzle-orm";
 
 export const imageRouter = createTRPCRouter({
-    hello: publicProcedure
-        .input(z.object({ text: z.string() }))
-        .query(({ input }) => {
-            return {
-                greeting: `Hello ${input.text}`,
-            };
-        }),
-
-    create: protectedProcedure
+    addImageData: protectedProcedure
         .input(z.object(
             {
                 name: z.string().min(1),
@@ -75,7 +68,23 @@ export const imageRouter = createTRPCRouter({
             }
         ),
 
-    getSecretMessage: protectedProcedure.query(() => {
-        return "you can now see this secret message!";
-    }),
+    deleteImagebyID: protectedProcedure
+        .input(z.object({ image_id: z.string().uuid() }))
+        .mutation(async ({ ctx, input }) => {
+            try {
+                const { data, error } = await ctx.supabase.storage
+                    .from("images")
+                    .remove([input.image_id]);
+                if (data) {
+                    const deleted = await ctx.db
+                        .delete(images)
+                        .where(eq(images.id, input.image_id));
+                    return deleted;
+                } else if (error) {
+                    console.error(error.message);
+                }
+            } catch (error) {
+                console.error("Unkown error: " + error);
+            }
+        }),
 });
