@@ -1,15 +1,26 @@
+import { z } from "zod";
+
 export type AddImageData = {
     id: string;
     name: string;
     url: string;
 };
 
-export type AddPDFDocumentData = {
+export class AddPDFDocumentData {
+    constructor(id: string, name: string, url: string, is_source?: boolean) {
+        this.id = id;
+        this.name = name;
+        this.url = url;
+        this.is_source = is_source;
+    }
+
     id: string;
     name: string;
     url: string;
     is_source?: boolean;
 };
+
+export const AddPDFDocumentZodType = z.instanceof(AddPDFDocumentData);
 
 export enum PageSize {
     A4 = "A4",
