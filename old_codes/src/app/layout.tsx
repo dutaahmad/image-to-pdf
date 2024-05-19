@@ -7,7 +7,7 @@ import { Analytics } from '@vercel/analytics/react';
 import "./globals.css";
 import clsx from "clsx";
 import { ThemeProvider } from "@/components/theme-provider";
-import NavbarSimplified from "@/components/navbar-simplified";
+import NavbarSimplified from "@/components/navbar";
 import { Toaster } from "@/components/ui/sonner";
 import dynamic from "next/dynamic";
 

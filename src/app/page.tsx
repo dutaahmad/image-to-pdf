@@ -1,10 +1,60 @@
 import Link from "next/link";
+import dynamic from "next/dynamic";
 
 import { CreatePost } from "@/app/_components/create-post";
 import { getServerAuthSession } from "@/server/auth";
 import { api } from "@/trpc/server";
+import TatanationPDFLogo from "@/components/tatanation-pdf-logo";
+import { Separator } from "@/components/ui/separator";
+import { Button } from "@/components/ui/button";
+
+const MainMenu = dynamic(() => import("@/components/main-menu"), {
+  ssr: false,
+});
 
 export default async function Home() {
+  const hello = await api.post.hello({ text: "from tRPC" });
+  const session = await getServerAuthSession();
+  return (
+    <main className="w-full min-h-screen">
+      <div className="flex items-center justify-evenly gap-8 m-auto h-screen">
+        <div className="w-[85%] md:w-[65%] flex flex-col items-end md:items-center justify-center">
+          {/* <img src="/Rectangle Logo.svg" className="md:w-[15%] w-[80%] rounded-full" /> */}
+          <TatanationPDFLogo />
+          <div className="flex flex-col md:flex-row gap-4 w-[70%] md:w-[80%] items-end justify-center">
+            <h1
+              className="font-bold 
+                    text-4xl
+                    text-right
+                    md:text-right
+                    font-sans
+                    sm:text-5xl
+                    md:text-7xl whitespace-normal
+                    bg-clip-text
+                    "
+            >
+              Tatanation PDF
+            </h1>
+            <span className="md:px-[1px] md:py-[4%] px-[45%] py-[1px] bg-border" />
+            {/* <Separator decorative /> */}
+            <h2 className="text-2xl sm:text-3xl md:text-4xl w-[30%] font-semibold tracking-tight transition-colors text-right md:text-left">
+              Your Simple, PDF Toolkit!
+            </h2>
+          </div>
+          <Separator className="my-4 w-[80%]" decorative />
+          {!session ?
+            (<Button asChild className="rounded-xl" size={"lg"}>
+              <Link href="/api/auth/signin" className="px-10 py-3 font-semibold">Sign in</Link>
+            </Button>)
+            :
+            (<MainMenu />)}
+        </div>
+      </div>
+    </main>
+  );
+}
+
+async function T3Home() {
   const hello = await api.post.hello({ text: "from tRPC" });
   const session = await getServerAuthSession();
 
