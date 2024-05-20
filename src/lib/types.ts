@@ -1,4 +1,7 @@
+import { OBJECT_LOCKER_SECRET_KEY } from "@/env";
 import { z } from "zod";
+
+export type IOBJECT_LOCKER_SECRET_KEY = typeof OBJECT_LOCKER_SECRET_KEY;
 
 export type AddImageData = {
     id: string;
