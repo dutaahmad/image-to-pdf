@@ -44,3 +44,10 @@ yarn-error.log*
 .pnp.cjs
 .pnp.loader.mjs
 .yarn
+rootCA.key
+server.csr.cnf
+v3.ext
+rootCA.srl
+server.crt
+server.csr
+server.key
