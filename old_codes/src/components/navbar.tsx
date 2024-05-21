@@ -1,55 +1,155 @@
-"use client"
+"use client";
 
-import Link from 'next/link'
-import React from 'react'
-import { ModeToggle } from './theme-toggle'
-import { usePathname } from 'next/navigation'
+import React, { Suspense } from "react";
+import Link from "next/link";
+import { type Session } from "next-auth";
+import {
+    useParams,
+    usePathname,
+    useRouter,
+    useSearchParams,
+} from "next/navigation";
+import { ChevronLeftIcon, ReloadIcon } from "@radix-ui/react-icons";
+import { PowerOff } from "lucide-react";
 
-const menus = [
-    {
-        name: 'Home',
-        path: '/',
-    },
-    {
-        name: 'Features',
-        path: '/features',
-    },
-    {
-        name: 'Pricing',
-        path: '/pricing',
-    },
-    {
-        name: 'Contact',
-        path: '/contact',
-    },
-]
+import { Button } from "./ui/button";
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from "./ui/tooltip";
+import { ModeToggle } from "./theme-toggle";
+// import { deleteImageByID, deletePdfByID } from "@/server/server-functions";
+import TatanationPDFLogo from "./tatanation-pdf-logo";
+import TooltipWrapper from "./tooltip-wrapper";
 
-const Menus = ({ menus, currentPath }: { menus: { name: string; path: string }[], currentPath: string }) => (
-    <>
-        {menus.map(menu => (
-            <Link
-                key={menu.name}
-                className={`flex items-center text-sm font-medium ${currentPath === menu.path ? "text-black dark:text-white" : ""} transition-colors hover:text-gray-900/90 dark:text-gray-400 dark:hover:text-gray-50/90`}
-                href={menu.path}
-            >
-                {menu.name}
-            </Link>
-        ))}
-    </>
-)
+const NavbarSimplified = ({ session }: { session: Session | null }) => {
+    const router = useRouter();
+    const path = usePathname();
+    const params = useParams<{ states: string[] }>();
+    const searchParams = useSearchParams();
 
-const NavigationBar = () => {
+    const uploadedURLQuery = searchParams.getAll("uploaded_image");
 
-    const path = usePathname()
+    // if (path === undefined) return null;
+
+    // @ts-ignore
+    const pageTitle = path!
+        .split("/")[1]
+        .split("-")
+        .map((word) => {
+            const firstLetter = word.charAt(0);
+            const firstLetterUppercase = firstLetter.toUpperCase();
+            const transformedWord =
+                word !== "pdf"
+                    ? word.replace(firstLetter, firstLetterUppercase)
+                    : word.toUpperCase();
+            return transformedWord;
+        })
+        .join(" ");
+    if (path.includes("single-image-to-pdf") && params && params.states) {
+        const image_id = params.states[0];
+        const pdf_id = params.states[1];
+        return (
+            <Suspense fallback={<ReloadIcon className="mr-2 h-4 w-4 animate-spin" />}>
+                <div className="fixed inset-x-0 top-0 z-10 flex items-center justify-between p-6 px-4 mx-auto bg-opacity-50 border shadow-lg md:px-6 bg-white/40 dark:bg-white/5 backdrop-filter backdrop-blur-md">
+                    <Button
+                        variant={"ghost"}
+                        size={"icon"}
+                        type="button"
+                        onClick={async () => {
+                            // await deleteImageByID(image_id);
+                            // if (pdf_id) await deletePdfByID(pdf_id);
+                            // router.push("/");
+                        }}
+                    >
+                        <ChevronLeftIcon className="w-4 h-4" />
+                    </Button>
+                    <h1 className="text-lg font-semibold tracking-tight scroll-m-20 md:text-2xl ">
+                        {pageTitle}
+                    </h1>
+                    <ModeToggle />
+                </div>
+            </Suspense>
+        );
+    }
+
+    if (uploadedURLQuery.length > 0) {
+        return (
+            <Suspense fallback={<ReloadIcon className="mr-2 h-4 w-4 animate-spin" />}>
+                <div className="fixed inset-x-0 top-0 z-10 flex items-center justify-between p-6 px-4 mx-auto bg-opacity-50 border shadow-lg md:px-6 bg-white/40 dark:bg-white/5 backdrop-filter backdrop-blur-md">
+                    <Button
+                        variant={"ghost"}
+                        size={"icon"}
+                        type="button"
+                        onClick={async () => {
+                            for (const image_id of uploadedURLQuery) {
+                                // await deleteImageByID(image_id);
+                                // if (pdf_id) await deletePdfByID(pdf_id);
+                            }
+                            router.push("/");
+                        }}
+                    >
+                        <ChevronLeftIcon className="w-4 h-4" />
+                    </Button>
+                    <h1 className="text-lg font-semibold tracking-tight scroll-m-20 md:text-2xl ">
+                        {pageTitle}
+                    </h1>
+                    <ModeToggle />
+                </div>
+            </Suspense>
+        );
+    }
+
+    if (path !== "/") {
+        return (
+            <Suspense fallback={<ReloadIcon className="mr-2 h-4 w-4 animate-spin" />}>
+                <div className="fixed inset-x-0 top-0 z-10 flex items-center justify-between p-6 px-4 mx-auto bg-opacity-50 border shadow-lg md:px-6 bg-white/40 dark:bg-white/5 backdrop-filter backdrop-blur-md">
+                    <HomeButton />
+                    <h1 className="text-lg font-semibold tracking-tight scroll-m-20 md:text-2xl ">
+                        {pageTitle}
+                    </h1>
+                    <ModeToggle />
+                </div>
+            </Suspense>
+        );
+    }
 
     return (
-        <div className="flex items-center justify-end w-[30%] rounded-3xl mx-auto p-6 px-4 md:px-6 fixed inset-x-0 top-4 z-10 bg-white/80 border shadow-lg dark:bg-white/10 backdrop-filter backdrop-blur-md bg-opacity-50">
-            <nav className="hidden space-x-4 md:flex gap-12 w-full items-center justify-center">
-                <Menus menus={menus} currentPath={path} />
-            </nav>
-            <ModeToggle />
-        </div>
+        <Suspense fallback={<ReloadIcon className="mr-2 h-4 w-4 animate-spin" />}>
+            <div className="fixed inset-x-0 top-0 z-10 flex items-center justify-between p-6 px-4 mx-auto bg-opacity-50 border shadow-lg md:px-6 bg-white/40 dark:bg-white/5 backdrop-filter backdrop-blur-md">
+                <HomeButton />
+                <div className="flex justify-end flex-1 gap-4">
+                    {session && (<SignOutButton />)}
+                    <ModeToggle />
+                </div>
+            </div>
+        </Suspense>
+    );
+};
+
+const HomeButton = () => (
+    <TooltipWrapper tooltipContent="Home">
+        <Button variant={"ghost"} size={"icon"} asChild>
+            <Link href={"/"}>
+                <TatanationPDFLogo className="w-8 md:w-8" />
+            </Link>
+        </Button>
+    </TooltipWrapper>
+)
+
+const SignOutButton = () => {
+
+    return (
+        <TooltipWrapper tooltipContent="Sign out">
+            <Button variant={"ghost"} size={"icon"} asChild>
+                <Link href={"/api/auth/signout"}>
+                    <PowerOff className="w-8 md:w-8" />
+                </Link>
+            </Button>
+        </TooltipWrapper>
     )
 }
 
-export default NavigationBar
+export default NavbarSimplified;

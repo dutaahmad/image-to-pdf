@@ -1,53 +1,63 @@
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import { SpeedInsights } from '@vercel/speed-insights/next';
+import "@/styles/globals.css";
 
-import { Analytics } from '@vercel/analytics/react';
-
-import "./globals.css";
-import clsx from "clsx";
-import { ThemeProvider } from "@/components/theme-provider";
-import NavbarSimplified from "@/components/navbar";
-import { Toaster } from "@/components/ui/sonner";
+import { Metadata } from "next";
 import dynamic from "next/dynamic";
 
-const Footer = dynamic(() => import("@/components/footer"), { ssr: false })
+import { GeistSans } from "geist/font/sans";
+import clsx from "clsx";
 
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter",
-  display: "swap",
-});
+import { ThemeProvider } from "@/components/theme-provider";
+import _Navbar from "@/components/navbar";
+import { Toaster } from "@/components/ui/sonner";
+
+const Footer = dynamic(() => import("@/components/footer"), { ssr: false });
+
+import { TRPCReactProvider } from "@/trpc/react";
+import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/next";
+import { getServerAuthSession } from "@/server/auth";
 
 export const metadata: Metadata = {
   title: "Tatanation PDF",
   description: "Your Simple PDF Toolkit!",
+  icons: [
+    { rel: "icon", url: "/favicon.ico" },
+    { rel: "icon", type: "shortcut", url: "/mstile-150x150.png" },
+    { rel: "icon", type: "apple", url: "/apple-touch-icon-152x152.png" }
+  ],
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
-    <html lang="en">
-      <body className={clsx(inter.variable)}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <NavbarSimplified />
-          <main className="h-full w-full ">
-            {children}
-          </main>
-          <Footer />
-          <Toaster />
-        </ThemeProvider>
+    <html lang="en" className={`${GeistSans.variable}`}>
+      <body>
+        <TRPCReactProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <Navbar />
+            <main className="h-full w-full ">
+              {children}
+            </main>
+            <Footer />
+            <Toaster />
+          </ThemeProvider>
+        </TRPCReactProvider>
         <Analytics />
         <SpeedInsights />
       </body>
     </html>
   );
+}
+
+const Navbar = async () => {
+  const session = await getServerAuthSession();
+  return <_Navbar session={session} />
 }

@@ -1,10 +1,12 @@
 import { type Config } from "drizzle-kit";
 
+import { env } from "@/env";
+
 export default {
-    schema: "./src/server/db-schema.ts",
-    driver: "pg",
-    dbCredentials: {
-        connectionString: process.env.DATABASE_URL!,
-    },
-    tablesFilter: ["tatanation-pdf-toolkit_*"],
+  schema: "./src/server/db/schema.ts",
+  dialect: "postgresql",
+  dbCredentials: {
+    url: env.DATABASE_URL,
+  },
+  tablesFilter: ["image-to-pdf_*"],
 } satisfies Config;
