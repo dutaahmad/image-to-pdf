@@ -18,7 +18,6 @@ export default async function Home() {
     <main className="w-full min-h-screen">
       <div className="flex items-center justify-evenly gap-8 m-auto h-screen">
         <div className="w-[85%] md:w-[65%] flex flex-col items-end md:items-center justify-center">
-          {/* <img src="/Rectangle Logo.svg" className="md:w-[15%] w-[80%] rounded-full" /> */}
           <TatanationPDFLogo />
           <div className="flex flex-col md:flex-row gap-4 w-[70%] md:w-[80%] items-end justify-center">
             <h1
