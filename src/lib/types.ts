@@ -3,6 +3,9 @@ import { z } from "zod";
 
 export type IOBJECT_LOCKER_SECRET_KEY = typeof OBJECT_LOCKER_SECRET_KEY;
 
+export type ExcludedMyObjectKeys = 'isLocked' | 'lock' | 'unlock';
+export type InitialPropertiesMyObjectType = Omit<Record<string, unknown>, ExcludedMyObjectKeys>;
+
 export type AddImageData = {
     id: string;
     name: string;

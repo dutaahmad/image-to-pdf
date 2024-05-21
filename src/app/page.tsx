@@ -7,28 +7,12 @@ import { api } from "@/trpc/server";
 import TatanationPDFLogo from "@/components/tatanation-pdf-logo";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
-import MyObject from "@/lib/MyObject";
-import { OBJECT_LOCKER_SECRET_KEY } from "@/env";
 
 const MainMenu = dynamic(() => import("@/components/main-menu"), {
   ssr: false,
 });
 
-const myObject = new MyObject({
-  name: "MyObject",
-  description: "Created Object from custom Object",
-  objectDetail: {
-    createdAt: "subuh",
-    createdBy: "Tata"
-  }
-})
-
 export default async function Home() {
-  // const hello = await api.post.hello({ text: "from tRPC" });
-  console.log("MyObject lock status : ", myObject.isLocked());
-  myObject.lock(OBJECT_LOCKER_SECRET_KEY);
-  console.log("MyObject lock status : ", myObject.isLocked());
-
   const session = await getServerAuthSession();
   return (
     <main className="w-full min-h-screen">

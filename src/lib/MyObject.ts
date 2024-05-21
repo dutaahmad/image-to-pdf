@@ -1,18 +1,14 @@
 import { OBJECT_LOCKER_SECRET_KEY } from "@/env";
-import { IOBJECT_LOCKER_SECRET_KEY } from "@/lib/types";
+import { IOBJECT_LOCKER_SECRET_KEY, InitialPropertiesMyObjectType } from "@/lib/types";
 
-// // a TypeScript interface representing the allowed initial properties
-// interface InitialProperties<ValueType> {
-//     [key: string]: ValueType;
-// }
-
-// Define a TypeScript type to exclude specified keys
-type InitialProperties<ValueType> = Omit<Record<string, ValueType>, 'isLocked' | 'lock' | 'unlock'>;
-
-export default class MyObject<ValueType> extends Object {
+export class MyObject<PropertiesType extends InitialPropertiesMyObjectType> extends Object {
     private _lockKey: string | null = null;
 
-    constructor(initialProperties: InitialProperties<ValueType>) {
+    constructor(
+        initialProperties: InitialPropertiesMyObjectType,
+        lockNow?: ({ instance, secretkey }: { instance: MyObject<PropertiesType>, secretkey: IOBJECT_LOCKER_SECRET_KEY }) => void,
+        secretKey?: IOBJECT_LOCKER_SECRET_KEY
+    ) {
         super();
 
         // Check for forbidden property names
@@ -22,8 +18,13 @@ export default class MyObject<ValueType> extends Object {
                 throw new Error(`The property name "${prop}" is reserved and cannot be used as an initial property.`);
             }
         };
-
         Object.assign(this, initialProperties);
+        if (lockNow && secretKey) {
+            lockNow({
+                instance: this,
+                secretkey: secretKey,
+            });
+        }
     }
 
     isLocked(): boolean {
@@ -51,9 +52,9 @@ export default class MyObject<ValueType> extends Object {
             Object.preventExtensions(this); // Prevent new properties from being added
             Object.freeze(this); // Locks the object, making it immutable
         }
-        //  else {
-        // throw new Error("Object is already locked.");
-        // }
+        else {
+            console.error("Object is already locked.");
+        }
     }
 
     unlock(secretKey: string): void {
@@ -65,5 +66,12 @@ export default class MyObject<ValueType> extends Object {
         } else {
             throw new Error("Incorrect secret key or object is not locked.");
         }
+    }
+}
+
+export default class LockedObject<PropertiesType extends InitialPropertiesMyObjectType> extends MyObject<PropertiesType> {
+    constructor(properties: PropertiesType, secretKey: IOBJECT_LOCKER_SECRET_KEY) {
+        super(properties);
+        this.lock(secretKey);
     }
 }
