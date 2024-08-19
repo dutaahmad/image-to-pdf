@@ -1,9 +1,7 @@
 import Link from "next/link";
 import dynamic from "next/dynamic";
 
-import { CreatePost } from "@/app/_components/create-post";
 import { getServerAuthSession } from "@/server/auth";
-import { api } from "@/trpc/server";
 import TatanationPDFLogo from "@/components/tatanation-pdf-logo";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";

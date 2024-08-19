@@ -31,19 +31,22 @@ export const posts = createTable(
     createdById: varchar("createdById", { length: 255 })
       .notNull()
       .references(() => users.id),
-    createdAt: timestamp("created_at", { withTimezone: true })
+    createdAt: timestamp("createdAt", { withTimezone: true })
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
     updatedAt: timestamp("updatedAt", { withTimezone: true }),
   },
   (example) => ({
-    createdByIdIdx: index("createdById_idx").on(example.createdById),
-    nameIndex: index("name_idx").on(example.name),
+    createdByIdIdx: index("posts_createdById_idx").on(example.createdById),
+    nameIndex: index("posts_name_idx").on(example.name),
   })
 );
 
 export const users = createTable("user", {
-  id: varchar("id", { length: 255 }).notNull().primaryKey(),
+  id: varchar("id", { length: 255 })
+    .notNull()
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
   name: varchar("name", { length: 255 }),
   email: varchar("email", { length: 255 }).notNull(),
   emailVerified: timestamp("emailVerified", {
@@ -138,8 +141,12 @@ export const images = createTable("images", {
     .notNull()
     .references(() => users.id),
 }, (example) => ({
-  createdByIdIdx: index("createdById_idx").on(example.createdById),
-  nameIndex: index("name_idx").on(example.name),
+  createdByIdIdx: index("images_createdById_idx").on(example.createdById),
+  nameIndex: index("images_name_idx").on(example.name),
+}));
+
+export const imagesRelations = relations(images, ({ one }) => ({
+  user: one(users, { fields: [images.createdById], references: [users.id] }),
 }));
 
 export const pdf_documents = createTable("pdf_documents", {
@@ -148,7 +155,7 @@ export const pdf_documents = createTable("pdf_documents", {
   url: varchar("url", { length: 1000 }),
   is_source: boolean("is_source").notNull().default(false),
   source_data: jsonb("source_data").$type<PDFSourceIDs | ImageSourceIDs>(),
-  createdAt: timestamp("created_at")
+  createdAt: timestamp("createdAt")
     .default(sql`CURRENT_TIMESTAMP`)
     .notNull(),
   updatedAt: timestamp("updatedAt"),
