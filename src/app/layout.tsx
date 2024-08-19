@@ -10,7 +10,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import _Navbar from "@/components/navbar";
 import { Toaster } from "@/components/ui/sonner";
 
-const Footer = dynamic(() => import("@/components/footer"), { ssr: false });
+const _Footer = dynamic(() => import("@/components/footer"), { ssr: false });
 
 import { TRPCReactProvider } from "@/trpc/react";
 import { Analytics } from "@vercel/analytics/react";
@@ -43,7 +43,7 @@ export default function RootLayout({
             disableTransitionOnChange
           >
             <Navbar />
-            <main className="h-full w-full ">
+            <main className="w-full h-full">
               {children}
             </main>
             <Footer />
@@ -60,4 +60,9 @@ export default function RootLayout({
 const Navbar = async () => {
   const session = await getServerAuthSession();
   return <_Navbar session={session} />
+}
+
+const Footer = async () => {
+  const session = await getServerAuthSession();
+  return <_Footer session={session} />
 }

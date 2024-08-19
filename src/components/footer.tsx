@@ -4,6 +4,7 @@ import { Cross2Icon } from "@radix-ui/react-icons";
 import { Button } from "./ui/button";
 import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
+import { type Session } from "next-auth";
 
 const calculateTimeDifference = () => {
     const now = new Date();
@@ -15,7 +16,8 @@ const calculateTimeDifference = () => {
     return differenceInSeconds;
 };
 
-const Footer = () => {
+const Footer = ({ session }: { session: Session | null }) => {
+
     const [open, setOpen] = useState(true);
     const localTime = new Date();
     const timezoneOffsetInMinutes = localTime.getTimezoneOffset();
@@ -37,7 +39,7 @@ const Footer = () => {
         return `All of Your data in the server will be deleted in ${hours} hours ${minutes} minutes ${remainingSeconds} seconds`;
     };
 
-    return (
+    if (session) return (
         <div
             className={cn(
                 "fixed inset-x-0 bottom-0 z-10 items-center justify-between p-2 px-4 mx-auto bg-opacity-50 border shadow-lg md:px-6 bg-destructive dark:bg-destructive backdrop-filter backdrop-blur-md",
@@ -51,10 +53,10 @@ const Footer = () => {
                 className="w-fit h-fit"
                 onClick={() => setOpen(false)}
             >
-                <Cross2Icon className="h-4 w-4" />
+                <Cross2Icon className="w-4 h-4" />
             </Button>
         </div>
-    );
+    ); else return null;
 };
 
 export default Footer;
