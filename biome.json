@@ -13,7 +13,10 @@
   },
   "javascript": {
     "formatter": {
-      "quoteStyle": "single"
+      "quoteStyle": "double",
+      "semicolons": "always",
+      "bracketSpacing": true,
+      "arrowParentheses": "always"
     }
   },
   "linter": {

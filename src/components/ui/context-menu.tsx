@@ -6,7 +6,7 @@ import {
   DotFilledIcon,
 } from "@radix-ui/react-icons"
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/libs/utils"
 
 const ContextMenu = ContextMenuPrimitive.Root
 
@@ -36,7 +36,7 @@ const ContextMenuSubTrigger = React.forwardRef<
     {...props}
   >
     {children}
-    <ChevronRightIcon className="ml-auto h-4 w-4" />
+    <ChevronRightIcon className="ml-auto w-4 h-4" />
   </ContextMenuPrimitive.SubTrigger>
 ))
 ContextMenuSubTrigger.displayName = ContextMenuPrimitive.SubTrigger.displayName
@@ -104,9 +104,9 @@ const ContextMenuCheckboxItem = React.forwardRef<
     checked={checked}
     {...props}
   >
-    <span className="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
+    <span className="left-2 absolute flex justify-center items-center w-3.5 h-3.5">
       <ContextMenuPrimitive.ItemIndicator>
-        <CheckIcon className="h-4 w-4" />
+        <CheckIcon className="w-4 h-4" />
       </ContextMenuPrimitive.ItemIndicator>
     </span>
     {children}
@@ -127,9 +127,9 @@ const ContextMenuRadioItem = React.forwardRef<
     )}
     {...props}
   >
-    <span className="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
+    <span className="left-2 absolute flex justify-center items-center w-3.5 h-3.5">
       <ContextMenuPrimitive.ItemIndicator>
-        <DotFilledIcon className="h-4 w-4 fill-current" />
+        <DotFilledIcon className="w-4 h-4 fill-current" />
       </ContextMenuPrimitive.ItemIndicator>
     </span>
     {children}

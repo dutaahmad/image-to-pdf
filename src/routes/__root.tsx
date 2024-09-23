@@ -1,12 +1,24 @@
 import * as React from 'react'
 import { Outlet, createRootRoute } from '@tanstack/react-router'
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuIndicator,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+  NavigationMenuViewport,
+} from "@/components/ui/navigation-menu";
+import ThemeSwitcher from '@/components/ThemeSwitch';
+import { ThemeProvider } from '@/components/ThemeProvider';
 
 export const Route = createRootRoute({
   component: () => (
-    <React.Fragment>
+    <ThemeProvider defaultTheme="system" storageKey="rsbuild-ui-theme" >
       <div className='w-full min-h-screen'>
         <div className='flex flex-col justify-center items-center w-full'>
-          This is header
+          <ThemeSwitcher />
         </div>
         <div className='flex flex-col justify-center items-center w-full'>
           <Outlet />
@@ -15,6 +27,6 @@ export const Route = createRootRoute({
           This is footer
         </div>
       </div>
-    </React.Fragment>
+    </ThemeProvider>
   ),
 })
